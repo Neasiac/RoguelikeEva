@@ -21,11 +21,6 @@ namespace Vegricht.RoguelikeEva.Components
                 Max = max;
                 Remaining = Max;
             }
-
-            public void Reset()
-            {
-                Remaining = Max;
-            }
         }
 
         struct NodeDepthPair
@@ -41,6 +36,7 @@ namespace Vegricht.RoguelikeEva.Components
         }
 
         public bool Selected { get; set; }
+        public HashSet<MapNode> Reachable { get; set; }
         public MapNode Tile { get; set; }
         public Status Speed { get; set; }
 
@@ -52,7 +48,6 @@ namespace Vegricht.RoguelikeEva.Components
         MapNode[] Path;
         int CurrentWaypoint;
         float MovementSpeed;
-        HashSet<MapNode> Reachable;
         Color HighlightColor;
 
         public Chara(Player player, MapNode position, Color highlightColor)
@@ -61,7 +56,7 @@ namespace Vegricht.RoguelikeEva.Components
             Tile = position;
             HighlightColor = highlightColor;
         }
-
+        
         public override void OnStart()
         {
             Trans = GetComponent<Transform>();
@@ -202,22 +197,23 @@ namespace Vegricht.RoguelikeEva.Components
                 if (node.Depth == Speed.Remaining)
                     continue;
 
-                foreach (MapNode neighbor in node.Node.Neighbors)
-                {
-                    if (Reachable.Contains(neighbor))
-                        continue;
-
-                    if (!openH.Contains(neighbor))
+                if (node.Node.RoomID == Tile.RoomID || !node.Node.IsDoor) // FIXME: this only applies if we don't have view in the next room
+                    foreach (MapNode neighbor in node.Node.Neighbors)
                     {
-                        openQ.Enqueue(new NodeDepthPair(neighbor, node.Depth + 1));
-                        openH.Add(neighbor);
+                        if (Reachable.Contains(neighbor))
+                            continue;
+
+                        if (!openH.Contains(neighbor))
+                        {
+                            openQ.Enqueue(new NodeDepthPair(neighbor, node.Depth + 1));
+                            openH.Add(neighbor);
+                        }
                     }
-                }
 
                 Reachable.Add(node.Node);
             }
 
-            // visualize them
+            // Visualize them
             Player.RequestHighlight(Reachable, HighlightColor);
         }
     }

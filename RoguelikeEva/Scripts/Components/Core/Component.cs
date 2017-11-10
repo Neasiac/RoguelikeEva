@@ -81,8 +81,6 @@ namespace Vegricht.RoguelikeEva.Components.Core
         {
             Parent = parent;
             Active = true;
-
-            OnStart();
         }
 
         // Some helper shortcut methods

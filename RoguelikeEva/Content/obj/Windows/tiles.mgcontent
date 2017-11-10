@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/wall.jpg</SourceFile>
-  <SourceTime>2017-11-02T18:30:40.8541111+01:00</SourceTime>
-  <DestFile>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/bin/Windows/wall.xnb</DestFile>
-  <DestTime>2017-11-10T16:14:56.0833505+01:00</DestTime>
+  <SourceFile>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/tiles.png</SourceFile>
+  <SourceTime>2017-11-10T19:35:01.7492996+01:00</SourceTime>
+  <DestFile>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/bin/Windows/tiles.xnb</DestFile>
+  <DestTime>2017-11-10T19:35:30.434118+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T16:05:36+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

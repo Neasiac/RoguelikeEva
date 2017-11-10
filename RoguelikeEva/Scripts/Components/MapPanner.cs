@@ -49,8 +49,8 @@ namespace Vegricht.RoguelikeEva.Components
         
         Vector2 MapClampedPosition(Vector2 position)
         {
-            var cameraMax = new Vector2(MapWidth * MapNode.Size - (Camera.ViewportWidth / Camera.Zoom / 2),
-                                        MapHeight * MapNode.Size - (Camera.ViewportHeight / Camera.Zoom / 2));
+            var cameraMax = new Vector2(MapWidth * Map.Size - (Camera.ViewportWidth / Camera.Zoom / 2),
+                                        MapHeight * Map.Size - (Camera.ViewportHeight / Camera.Zoom / 2));
 
             return Vector2.Clamp(
                 position,

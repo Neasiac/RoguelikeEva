@@ -57,6 +57,7 @@ namespace Vegricht.RoguelikeEva.Scenes.Core
         public void AddComponent(Component component)
         {
             Components.Add(component);
+            component.OnInitiated(this);
         }
 
         public T GetComponent<T>() where T : Component

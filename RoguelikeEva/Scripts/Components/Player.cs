@@ -12,6 +12,7 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public MapNode SelectedNode { get; private set; }
         public PlayerMode Mode { get; set; }
+        public List<Chara> Charas { get; private set; } = new List<Chara>(4);
 
         bool SelectionInvalidated;
         Color HighlightColor;
@@ -43,6 +44,22 @@ namespace Vegricht.RoguelikeEva.Components
         public void RequestDehighlight(HashSet<MapNode> nodes)
         {
             ToDehighlight = nodes;
+        }
+
+        public void NextTurn()
+        {
+            foreach (Chara chara in Charas)
+            {
+                Chara.Status speed = chara.Speed;
+                speed.Remaining = speed.Max;
+                chara.Speed = speed;
+
+                if (chara.Selected)
+                {
+                    chara.Selected = false;
+                    RequestDehighlight(chara.Reachable);
+                }
+            }
         }
         
         public override void Update(GameTime gameTime)

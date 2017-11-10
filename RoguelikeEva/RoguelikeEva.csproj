@@ -60,6 +60,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FibonacciHeap.cs" />
+    <Compile Include="Scripts\Map.cs" />
     <Compile Include="Scripts\Components\Chara.cs" />
     <Compile Include="Scripts\Pathfinding\HashedFibonacciHeap.cs" />
     <Compile Include="Scripts\Pathfinding\AStarPathFinder.cs" />

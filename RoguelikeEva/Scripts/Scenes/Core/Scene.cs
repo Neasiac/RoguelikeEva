@@ -29,7 +29,7 @@ namespace Vegricht.RoguelikeEva.Scenes.Core
             foreach (GameObject obj in Objects)
                 foreach (Component component in obj)
                 {
-                    component.OnInitiated(obj);
+                    component.OnStart();
 
                     // Notify SceneManager that this GameObject wishes to be rendered
                     if (component is RenderableComponent)

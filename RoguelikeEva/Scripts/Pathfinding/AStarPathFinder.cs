@@ -17,8 +17,8 @@ namespace Vegricht.RoguelikeEva.Pathfinding
             HashSet<MapNode> closed = new HashSet<MapNode>();
             HashedFibonacciHeap<MapNode, int> fringe = new HashedFibonacciHeap<MapNode, int>(0);
             Dictionary<MapNode, MapNode> cameFrom = new Dictionary<MapNode, MapNode>();
-            Dictionary<MapNode, int> gScore = InitializeScore(int.MaxValue);
-            Dictionary<MapNode, int> fScore = InitializeScore(int.MaxValue);
+            Score gScore = new Score();
+            Score fScore = new Score();
 
             fringe.Insert(from, heuristic(from, to));
             gScore[from] = 0;
@@ -77,15 +77,34 @@ namespace Vegricht.RoguelikeEva.Pathfinding
             path.Reverse();
             return path.ToArray();
         }
-
-        Dictionary<MapNode, int> InitializeScore(int defaultValue)
+        
+        class Score
         {
-            var score = new Dictionary<MapNode, int>();
+            Dictionary<MapNode, int> Mapping;
 
-            foreach (MapNode node in MapNode.Map)
-                score.Add(node, defaultValue);
+            public Score()
+            {
+                Mapping = new Dictionary<MapNode, int>();
+            }
 
-            return score;
+            public int this[MapNode node]
+            {
+                get
+                {
+                    if (!Mapping.ContainsKey(node))
+                    {
+                        Mapping.Add(node, int.MaxValue);
+                        return int.MaxValue;
+                    }
+
+                    return Mapping[node];
+                }
+
+                set
+                {
+                    Mapping[node] = value;
+                }
+            }
         }
     }
 }
