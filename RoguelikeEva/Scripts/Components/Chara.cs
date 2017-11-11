@@ -6,6 +6,7 @@ using Vegricht.RoguelikeEva.Components.Core;
 using Vegricht.RoguelikeEva.Animations;
 using Microsoft.Xna.Framework.Input;
 using Vegricht.RoguelikeEva.Pathfinding;
+using Vegricht.RoguelikeEva.Level;
 
 namespace Vegricht.RoguelikeEva.Components
 {
@@ -147,16 +148,7 @@ namespace Vegricht.RoguelikeEva.Components
             // Are we there yet?
             if (CurrentWaypoint == Path.Length)
             {
-                Path = null;
-                Trans.Position = Tile.Position; // snap to grid
-                Player.Mode = Player.PlayerMode.Thinking;
-                Tile.OccupiedBy = Parent;
-
-                if (Speed.Remaining > 0)
-                    FindReachableTiles(); // can we keep going? -> show us where!
-                else
-                    Selected = false; // can we not? -> deselect!
-
+                FinalizePath();
                 return;
             }
             
@@ -168,16 +160,7 @@ namespace Vegricht.RoguelikeEva.Components
 
             // New waypoint?
             if (Vector2.DistanceSquared(Trans.Position, Path[CurrentWaypoint].Position) < NextWaypointSquared)
-            {
-                if (CurrentWaypoint > 0)
-                {
-                    Status speed = Speed;
-                    speed.Remaining--;
-                    Speed = speed;
-                }
-
                 Tile = Path[CurrentWaypoint++];
-            }
         }
 
         void FindReachableTiles()
@@ -197,7 +180,7 @@ namespace Vegricht.RoguelikeEva.Components
                 if (node.Depth == Speed.Remaining)
                     continue;
 
-                if (node.Node.RoomID == Tile.RoomID || !node.Node.IsDoor) // FIXME: this only applies if we don't have view in the next room
+                if (node.Node.Room.View == Room.Visibility.Visible)
                     foreach (MapNode neighbor in node.Node.Neighbors)
                     {
                         if (Reachable.Contains(neighbor))
@@ -215,6 +198,40 @@ namespace Vegricht.RoguelikeEva.Components
 
             // Visualize them
             Player.RequestHighlight(Reachable, HighlightColor);
+        }
+
+        bool AlliedUnitInRoom(Room room)
+        {
+            foreach (Chara chara in Player.Charas)
+                if (chara.Tile.Room == room)
+                    return true;
+
+            return false;
+        }
+
+        void FinalizePath()
+        {
+            // if destination room isn't visible, make it
+            if (Tile.Room.View != Room.Visibility.Visible)
+                Tile.Room.UpdateGraphics(Room.Visibility.Visible);
+
+            // if there are no allied units left in the starting room, darken it
+            if (!AlliedUnitInRoom(Path[0].Room))
+                Path[0].Room.UpdateGraphics(Room.Visibility.Darkened);
+
+            Status speed = Speed;
+            speed.Remaining -= Path.Length - 1;
+            Speed = speed;
+
+            Path = null;
+            Trans.Position = Tile.Position; // snap to grid
+            Player.Mode = Player.PlayerMode.Thinking;
+            Tile.OccupiedBy = Parent;
+
+            if (Speed.Remaining > 0)
+                FindReachableTiles(); // can we keep going? -> show us where!
+            else
+                Selected = false; // can we not? -> deselect!
         }
     }
 }

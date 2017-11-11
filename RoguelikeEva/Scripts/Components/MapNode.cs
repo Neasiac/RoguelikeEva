@@ -6,6 +6,7 @@ using Vegricht.RoguelikeEva.Components.Core;
 using Vegricht.RoguelikeEva.Animations;
 using Microsoft.Xna.Framework.Input;
 using Vegricht.RoguelikeEva.Scenes.Core;
+using Vegricht.RoguelikeEva.Level;
 
 namespace Vegricht.RoguelikeEva.Components
 {
@@ -13,8 +14,8 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public GameObject OccupiedBy { get; set; }
         public List<MapNode> Neighbors { get; private set; }
-        public Map.LinkedNeighbors Linked { get; set; }
-        public byte RoomID { get; private set; }
+        public Room.LinkedNeighbors Linked { get; set; }
+        public Room Room { get; private set; }
         public byte DoorID { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -23,7 +24,7 @@ namespace Vegricht.RoguelikeEva.Components
         {
             get
             {
-                return RoomID > 0;
+                return Room.ID > 0;
             }
         }
 
@@ -43,11 +44,11 @@ namespace Vegricht.RoguelikeEva.Components
             }
         }
 
-        public MapNode(int x, int y, int code)
+        public MapNode(int x, int y, byte doorID, Room room)
         {
             Neighbors = new List<MapNode>(4);
-            RoomID = (byte)(code & 0x00FF);
-            DoorID = (byte)((code & 0xFF00) >> 4);
+            DoorID = doorID;
+            Room = room;
             X = x;
             Y = y;
         }

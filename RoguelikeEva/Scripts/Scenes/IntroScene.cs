@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using Vegricht.RoguelikeEva.Animations;
 using Vegricht.RoguelikeEva.Pathfinding;
 using System.Collections.Generic;
+using Vegricht.RoguelikeEva.Level;
 
 namespace Vegricht.RoguelikeEva.Scenes
 {
@@ -17,6 +18,7 @@ namespace Vegricht.RoguelikeEva.Scenes
     {
         Texture2D Wall;
         Texture2D Floor;
+        Texture2D FloorDark;
         Texture2D Chara;
         Texture2D NextTurn;
 
@@ -61,6 +63,7 @@ namespace Vegricht.RoguelikeEva.Scenes
         {
             Wall = Content.Load<Texture2D>("wall");
             Floor = Content.Load<Texture2D>("tiles");
+            FloorDark = Content.Load<Texture2D>("tiles dark");
             Chara = Content.Load<Texture2D>("chara");
             NextTurn = Content.Load<Texture2D>("nextturn");
         }
@@ -95,11 +98,19 @@ namespace Vegricht.RoguelikeEva.Scenes
         void CreateMap()
         {
             GameObject[,] tiles = new GameObject[30, 20];
+            Dictionary<byte, Room> rooms = new Dictionary<byte, Room>();
 
             for (int x = 0; x < 30; x++)
                 for (int y = 0; y < 20; y++)
                 {
-                    MapNode node = new MapNode(x, y, map[x, y]);
+                    byte roomID = (byte)(map[x, y] & 0x00FF);
+                    byte doorID = (byte)((map[x, y] & 0xFF00) >> 4);
+
+                    if (!rooms.ContainsKey(roomID))
+                        rooms.Add(roomID, new Room(roomID));
+
+                    Room room = rooms[roomID];
+                    MapNode node = new MapNode(x, y, doorID, room);
 
                     tiles[x, y] = new GameObjectBuilder()
                         .AddComponent(new Transform(new Vector2(x * Map.Size, y * Map.Size), new Vector2(0.16f)))
@@ -109,10 +120,11 @@ namespace Vegricht.RoguelikeEva.Scenes
                         .AddComponent(new Clickable(() => GlobalScripts.GetComponent<Player>().SelectNode(node)))
                         .Register(this);
                 }
-
-            Map = new Map(tiles);
+            
+            Map = new Map(tiles, rooms.Values);
+            Map.SetupRooms();
             Map.SetNeighbors();
-            Map.SetTileGraphics(Floor);
+            Map.SetTileGraphics(Floor, FloorDark, Wall);
         }
         
         void CreateCharacters()
@@ -157,8 +169,11 @@ namespace Vegricht.RoguelikeEva.Scenes
                 .Register(this);
 
             player.Mode = Player.PlayerMode.Thinking;
+
             Map[10, 4].OccupiedBy = chara1;
             Map[2, 1].OccupiedBy = chara2;
+            Map[10, 4].Room.UpdateGraphics(Room.Visibility.Visible);
+            Map[2, 1].Room.UpdateGraphics(Room.Visibility.Visible);
 
             GlobalScripts.GetComponent<Player>().Charas.Add(chara1.GetComponent<Chara>());
             GlobalScripts.GetComponent<Player>().Charas.Add(chara2.GetComponent<Chara>());

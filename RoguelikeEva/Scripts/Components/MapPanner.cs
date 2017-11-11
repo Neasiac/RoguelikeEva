@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Microsoft.Xna.Framework;
 using Vegricht.RoguelikeEva.Components.Core;
-using Vegricht.RoguelikeEva.Animations;
+using Vegricht.RoguelikeEva.Level;
 using Microsoft.Xna.Framework.Input;
 
 namespace Vegricht.RoguelikeEva.Components
