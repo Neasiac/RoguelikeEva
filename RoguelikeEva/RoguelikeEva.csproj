@@ -60,6 +60,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FibonacciHeap.cs" />
+    <Compile Include="Scripts\Components\AnimationStateMachine.cs" />
+    <Compile Include="Scripts\Components\CameraFollow.cs" />
     <Compile Include="Scripts\Level\Room.cs" />
     <Compile Include="Scripts\Level\Map.cs" />
     <Compile Include="Scripts\Components\Chara.cs" />

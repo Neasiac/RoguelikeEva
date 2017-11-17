@@ -35,6 +35,13 @@ namespace Vegricht.RoguelikeEva.Components
             // Reset the animation, so it can be played again, in case it's been already played before
             CurrentAnimationKey = key;
             Animations[CurrentAnimationKey].Reset();
+
+            // Distribute the change into the SpriteRenderer component (will not be present when defining initial animation)
+            if (Renderer != null)
+            {
+                Renderer.Sprite = Animations[CurrentAnimationKey].CurrentSprite;
+                Renderer.SourceRectangle = Animations[CurrentAnimationKey].CurrentSourceRectangle;
+            }
         }
 
         public override void OnStart()

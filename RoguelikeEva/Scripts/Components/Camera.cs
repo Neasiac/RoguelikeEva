@@ -12,7 +12,6 @@ namespace Vegricht.RoguelikeEva.Components
     class Camera : Component, IDisposable
     {
         public Transform Trans { get; private set; }
-        public float Zoom { get; private set; }
 
         // Height and width of the viewport window which we need to adjust
         // any time the player resizes the game window. Not handled, since
@@ -23,7 +22,6 @@ namespace Vegricht.RoguelikeEva.Components
         public override void OnStart()
         {
             SceneManager.TransformMatrixGenerator += TranslationMatrix;
-            Zoom = 1.0f;
 
             ViewportWidth = SceneManager.ViewportRectangle.Width;
             ViewportHeight = SceneManager.ViewportRectangle.Height;
@@ -51,22 +49,7 @@ namespace Vegricht.RoguelikeEva.Components
         {
             return Matrix.CreateTranslation(-(int)Trans.Position.X, -(int)Trans.Position.Y, 0) *
                 Matrix.CreateRotationZ(Trans.Rotation) *
-                Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
                 Matrix.CreateTranslation(new Vector3(ViewportCenter, 0));
-        }
-
-        // Call this method with negative values to zoom out
-        // or positive values to zoom in. It looks at the current zoom
-        // and adjusts it by the specified amount. If we were at a 1.0f
-        // zoom level and specified -0.5f amount it would leave us with
-        // 1.0f - 0.5f = 0.5f so everything would be drawn at half size.
-        public void AdjustZoom(float amount)
-        {
-            Zoom += amount;
-            if (Zoom < 0.25f)
-            {
-                Zoom = 0.25f;
-            }
         }
         
         public void Dispose()

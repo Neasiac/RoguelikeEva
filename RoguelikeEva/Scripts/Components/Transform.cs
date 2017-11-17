@@ -17,10 +17,7 @@ namespace Vegricht.RoguelikeEva.Components
         public Vector2 Position { get; set; }
         public Vector2 Scale { get; set; }
         public float Rotation { get; set; }
-
-        // Position during the last update
-        public Vector2 LastPosition { get; private set; }
-
+        
         public Transform(Vector2 position)
         {
             Position = position;
@@ -45,11 +42,6 @@ namespace Vegricht.RoguelikeEva.Components
             Position = position;
             Rotation = rotation;
             Scale = scale;
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            LastPosition = Position;
         }
     }
 }

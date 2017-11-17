@@ -4,10 +4,11 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/wall.jpg</File>
     <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/chara.png</File>
     <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/nextturn.png</File>
-    <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/tiles.png</File>
+    <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/monsters.png</File>
+    <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/wall.png</File>
     <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/tiles dark.png</File>
+    <File>C:/Users/Jan/Source/Repos/RoguelikeEva/RoguelikeEva/Content/tiles.png</File>
   </SourceFiles>
 </SourceFileCollection>

@@ -29,6 +29,22 @@ namespace Vegricht.RoguelikeEva.Level
             }
         }
 
+        public int Width
+        {
+            get
+            {
+                return Grid.GetLength(0);
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return Grid.GetLength(1);
+            }
+        }
+
         public Map(GameObject[,] grid, IEnumerable<Room> rooms)
         {
             Grid = new MapNode[grid.GetLength(0), grid.GetLength(1)];
@@ -100,13 +116,5 @@ namespace Vegricht.RoguelikeEva.Level
             node.Linked |= relativePosition;
             node.Neighbors.Add(Grid[x, y]);
         }
-
-        /*void InitializeNode(int x, int y)
-        {
-            Grid[x, y].Room.Nodes.Add(Grid[x, y]);
-
-            if (Grid[x, y].OccupiedBy != null && Grid[x, y].OccupiedBy.GetComponent<Chara>() != null)
-                Grid[x, y].Room.View = Room.Visibility.Visible;
-        }*/
     }
 }

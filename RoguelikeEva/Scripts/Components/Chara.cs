@@ -40,17 +40,17 @@ namespace Vegricht.RoguelikeEva.Components
         public HashSet<MapNode> Reachable { get; set; }
         public MapNode Tile { get; set; }
         public Status Speed { get; set; }
+        public MapNode[] Path { get; private set; }
+        public int CurrentWaypoint { get; private set; }
 
         const float NextWaypoint = 2;
         const float NextWaypointSquared = NextWaypoint * NextWaypoint;
         
         Transform Trans;
         Player Player;
-        MapNode[] Path;
-        int CurrentWaypoint;
         float MovementSpeed;
         Color HighlightColor;
-
+        
         public Chara(Player player, MapNode position, Color highlightColor)
         {
             Player = player;

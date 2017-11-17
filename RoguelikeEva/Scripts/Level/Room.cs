@@ -50,7 +50,7 @@ namespace Vegricht.RoguelikeEva.Level
             foreach (MapNode node in Nodes)
             {
                 SpriteRenderer renderer = node.GetComponent<SpriteRenderer>();
-                node.GetComponent<Transform>().Scale = View != Visibility.Undiscovered ? Vector2.One : new Vector2(0.16f); // FIXME: united scale !
+               // node.GetComponent<Transform>().Scale = View != Visibility.Undiscovered ? Vector2.One : new Vector2(0.16f); // FIXME: united scale !
                 bool configurationFound = false;
 
                 switch (View)
