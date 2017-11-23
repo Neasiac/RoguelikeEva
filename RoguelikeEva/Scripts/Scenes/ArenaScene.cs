@@ -14,13 +14,15 @@ using Vegricht.RoguelikeEva.Level;
 
 namespace Vegricht.RoguelikeEva.Scenes
 {
-    class IntroScene : Scene
+    class ArenaScene : Scene
     {
         Texture2D Wall;
         Texture2D Floor;
         Texture2D FloorDark;
         Texture2D Chara;
+        Texture2D Monsters;
         Texture2D NextTurn;
+        Texture2D Sword;
 
         ushort[,] map = new ushort[30, 20]
             {
@@ -65,7 +67,9 @@ namespace Vegricht.RoguelikeEva.Scenes
             Floor = Content.Load<Texture2D>("tiles");
             FloorDark = Content.Load<Texture2D>("tiles dark");
             Chara = Content.Load<Texture2D>("chara");
+            Monsters = Content.Load<Texture2D>("monsters");
             NextTurn = Content.Load<Texture2D>("nextturn");
+            Sword = Content.Load<Texture2D>("sword");
         }
 
         public override void OnInitiate()
@@ -73,6 +77,7 @@ namespace Vegricht.RoguelikeEva.Scenes
             CreateMechanics();
             CreateMap();
             CreateCharacters();
+            CreateMonsters();
         }
 
         void CreateMechanics()
@@ -82,16 +87,26 @@ namespace Vegricht.RoguelikeEva.Scenes
                 .AddComponent(new Camera())
                 .Register(this);
 
+            GameObject sword = new GameObjectBuilder()
+                .AddComponent(new Transform(new Vector2(1 * Map.Size, 1 * Map.Size)))
+                .AddComponent(new SpriteRenderer(Sword, new Rectangle(0, 0, Map.Size, Map.Size), .1f))
+                .AddComponent(CreateSwordAnimator())
+                .Register(this);
+
+            sword.Active = false;
+
             GlobalScripts = new GameObjectBuilder()
                 .AddComponent(new Player())
                 .AddComponent(new MapPanner(camera.GetComponent<Camera>()))
+                .AddComponent(new TurnManager())
+                .AddComponent(new CombatManager(sword))
                 .Register(this);
 
             GameObject nextturn = new GameObjectBuilder()
                 .AddComponent(new Transform(Vector2.Zero, new Vector2(.2f)))
                 .AddComponent(new SpriteRenderer(NextTurn, 0))
                 .AddComponent(new Dimentions(0, 0, 50, 50))
-                .AddComponent(new Clickable(GlobalScripts.GetComponent<Player>().NextTurn))
+                .AddComponent(new Clickable(GlobalScripts.GetComponent<TurnManager>().NextTurn))
                 .AddComponent(new CameraFollow(camera.GetComponent<Camera>()))
                 .Register(this);
         }
@@ -131,96 +146,123 @@ namespace Vegricht.RoguelikeEva.Scenes
         
         void CreateCharacters()
         {
-            Player player = GlobalScripts.GetComponent<Player>();
-            
             GameObject chara1 = new GameObjectBuilder()
                 .AddComponent(new Transform(new Vector2(Map.Size * 10, Map.Size * 4)))
                 .AddComponent(new SpriteRenderer(Chara))
-                .AddComponent(CreateAnimator(1, 0))
+                .AddComponent(CreateAnimator(Chara, 1, 0))
                 .AddComponent(CreateAnimationStateMachine(Map.Size))
-                .AddComponent(new Chara(player, Map[10, 4], Color.Yellow))
+                .AddComponent(new Hero(GlobalScripts, Map[10, 4], Color.Yellow, 8, 10, 4, CombatManager.CombatType.Lizard))
                 .Register(this);
 
             GameObject chara2 = new GameObjectBuilder()
                 .AddComponent(new Transform(new Vector2(Map.Size * 2, Map.Size)))
                 .AddComponent(new SpriteRenderer(Chara))
-                .AddComponent(CreateAnimator(0, 1))
+                .AddComponent(CreateAnimator(Chara, 0, 1))
                 .AddComponent(CreateAnimationStateMachine(Map.Size))
-                .AddComponent(new Chara(player, Map[2, 1], Color.Orange))
+                .AddComponent(new Hero(GlobalScripts, Map[2, 1], Color.Orange, 8, 10, 4, CombatManager.CombatType.Spock))
                 .Register(this);
 
-            player.Mode = Player.PlayerMode.Thinking;
+            GlobalScripts.GetComponent<Player>().Mode = Player.PlayerMode.Thinking;
 
             Map[10, 4].OccupiedBy = chara1;
             Map[2, 1].OccupiedBy = chara2;
             Map[10, 4].Room.UpdateGraphics(Room.Visibility.Visible);
             Map[2, 1].Room.UpdateGraphics(Room.Visibility.Visible);
 
-            GlobalScripts.GetComponent<Player>().Charas.Add(chara1.GetComponent<Chara>());
-            GlobalScripts.GetComponent<Player>().Charas.Add(chara2.GetComponent<Chara>());
+            GlobalScripts.GetComponent<TurnManager>().Heroes.Add(chara1.GetComponent<Hero>());
+            GlobalScripts.GetComponent<TurnManager>().Heroes.Add(chara2.GetComponent<Hero>());
         }
 
-        Animator CreateAnimator(int x, int y, int duration = 200, int size = 48)
+        void CreateMonsters()
+        {
+            CombatManager cm = GlobalScripts.GetComponent<CombatManager>();
+
+            GameObject mon1 = new GameObjectBuilder()
+                .AddComponent(new Transform(new Vector2(Map.Size * 3, Map.Size * 2)))
+                .AddComponent(new SpriteRenderer(Monsters))
+                .AddComponent(CreateAnimator(Monsters, 1, 0))
+                .AddComponent(CreateAnimationStateMachine(Map.Size))
+                .AddComponent(new Monster(cm, Map[10, 4], 8, 10, 4, CombatManager.CombatType.Paper)) // paper -> stong against near ally, scissors -> the other way around
+                .Register(this);
+
+            Map[3, 2].OccupiedBy = mon1;
+        }
+
+        Animator CreateSwordAnimator(int duration = 30, int size = 48)
+        {
+            Animator animator = new Animator();
+            Animation rotate = new Animation();
+
+            for (int y = 0; y < 4; y++)
+                for (int x = 0; x < 5 && y < 3 || x < 3 && y == 3; x++)
+                    rotate.Frames.Add(new Frame(Sword, duration, new Rectangle(size * x, size * y, size, size)));
+
+            animator.Animations.Add("rotate", rotate);
+            animator.Play("rotate");
+            return animator;
+        }
+
+        Animator CreateAnimator(Texture2D spriteset, int x, int y, int duration = 200, int size = 48)
         {
             Animator animator = new Animator();
 
             animator.Animations.Add("idle down",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("idle left",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 1), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 1), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("idle right",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 2), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 2), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("idle up",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 3), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 3), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("walking down",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("walking left",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4 + 1), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 1), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4 + 1), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4 + 1), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4 + 1), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 1), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4 + 1), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4 + 1), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("walking right",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4 + 2), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 2), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4 + 2), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4 + 2), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4 + 2), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 2), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4 + 2), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4 + 2), size, size))
                     .Build()
                 );
 
             animator.Animations.Add("walking up",
                 new AnimationBuilder()
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4 + 3), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 3), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4 + 3), size, size))
-                    .AddFrame(Chara, duration, new Rectangle(size * (x * 3), size * (y * 4 + 3), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4 + 3), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 1), size * (y * 4 + 3), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3 + 2), size * (y * 4 + 3), size, size))
+                    .AddFrame(spriteset, duration, new Rectangle(size * (x * 3), size * (y * 4 + 3), size, size))
                     .Build()
                 );
 
@@ -232,22 +274,24 @@ namespace Vegricht.RoguelikeEva.Scenes
         {
             AnimationStateMachine asm = new AnimationStateMachine("idle down");
 
-            Predicate<Chara> up = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
+            Predicate<Character> up = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
                 (chara.Tile.Position - chara.Path[chara.CurrentWaypoint].Position + new Vector2(0, -tileSize)).LengthSquared() < 1e-6;
 
-            Predicate<Chara> left = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
+            Predicate<Character> left = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
                 (chara.Tile.Position - chara.Path[chara.CurrentWaypoint].Position + new Vector2(-tileSize, 0)).LengthSquared() < 1e-6;
 
-            Predicate<Chara> right = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
+            Predicate<Character> right = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
                 (chara.Tile.Position - chara.Path[chara.CurrentWaypoint].Position + new Vector2(tileSize, 0)).LengthSquared() < 1e-6;
 
-            Predicate<Chara> down = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
+            Predicate<Character> down = chara => chara.Path != null && chara.Tile != null && chara.CurrentWaypoint < chara.Path.Length &&
                 (chara.Tile.Position - chara.Path[chara.CurrentWaypoint].Position + new Vector2(0, tileSize)).LengthSquared() < 1e-6;
 
             asm.AddTransition("idle down", "walking up", up);
             asm.AddTransition("idle left", "walking up", up);
             asm.AddTransition("idle right", "walking up", up);
             asm.AddTransition("idle up", "walking up", up);
+
+            asm.AddTransition("walking down", "walking up", up);
             asm.AddTransition("walking left", "walking up", up);
             asm.AddTransition("walking right", "walking up", up);
 
@@ -255,20 +299,26 @@ namespace Vegricht.RoguelikeEva.Scenes
             asm.AddTransition("idle left", "walking left", left);
             asm.AddTransition("idle right", "walking left", left);
             asm.AddTransition("idle up", "walking left", left);
+            
             asm.AddTransition("walking up", "walking left", left);
             asm.AddTransition("walking down", "walking left", left);
+            asm.AddTransition("walking right", "walking left", left);
 
             asm.AddTransition("idle down", "walking right", right);
             asm.AddTransition("idle left", "walking right", right);
             asm.AddTransition("idle right", "walking right", right);
             asm.AddTransition("idle up", "walking right", right);
+
             asm.AddTransition("walking up", "walking right", right);
             asm.AddTransition("walking down", "walking right", right);
+            asm.AddTransition("walking left", "walking right", right);
 
             asm.AddTransition("idle down", "walking down", down);
             asm.AddTransition("idle left", "walking down", down);
             asm.AddTransition("idle right", "walking down", down);
             asm.AddTransition("idle up", "walking down", down);
+
+            asm.AddTransition("walking up", "walking down", down);
             asm.AddTransition("walking left", "walking down", down);
             asm.AddTransition("walking right", "walking down", down);
 

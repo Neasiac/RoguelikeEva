@@ -59,12 +59,17 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FibonacciHeap.cs" />
+    <Compile Include="Externals\FibonacciHeap\FibonacciHeap.cs" />
+    <Compile Include="Externals\FibonacciHeap\FibonacciHeapNode.cs" />
     <Compile Include="Scripts\Components\AnimationStateMachine.cs" />
+    <Compile Include="Scripts\Components\CombatManager.cs" />
     <Compile Include="Scripts\Components\CameraFollow.cs" />
+    <Compile Include="Scripts\Components\Character.cs" />
+    <Compile Include="Scripts\Components\Monster.cs" />
+    <Compile Include="Scripts\Components\TurnManager.cs" />
     <Compile Include="Scripts\Level\Room.cs" />
     <Compile Include="Scripts\Level\Map.cs" />
-    <Compile Include="Scripts\Components\Chara.cs" />
+    <Compile Include="Scripts\Components\Hero.cs" />
     <Compile Include="Scripts\Pathfinding\HashedFibonacciHeap.cs" />
     <Compile Include="Scripts\Pathfinding\AStarPathFinder.cs" />
     <Compile Include="Scripts\Animations\Animation.cs" />
@@ -81,10 +86,11 @@
     <Compile Include="Scripts\Components\Transform.cs" />
     <Compile Include="Scripts\Components\Core\Component.cs" />
     <Compile Include="Scripts\Components\Core\RenderableComponent.cs" />
+    <Compile Include="Scripts\Pathfinding\Path.cs" />
     <Compile Include="Scripts\RoguelikeEva.cs" />
     <Compile Include="Scripts\Scenes\Core\GameObject.cs" />
     <Compile Include="Scripts\Scenes\Core\GameObjectBuilder.cs" />
-    <Compile Include="Scripts\Scenes\IntroScene.cs" />
+    <Compile Include="Scripts\Scenes\ArenaScene.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Scenes\Core\Scene.cs" />

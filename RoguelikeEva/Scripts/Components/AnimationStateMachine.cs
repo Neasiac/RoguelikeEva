@@ -10,25 +10,25 @@ namespace Vegricht.RoguelikeEva.Components
 {
     class AnimationStateMachine : Component
     {
-        public Dictionary<string, Dictionary<string, Predicate<Chara>>> Transitions { get; private set; }
+        public Dictionary<string, Dictionary<string, Predicate<Character>>> Transitions { get; private set; }
         public string CurrentState { get; private set; }
 
-        Chara Chara;
+        Character Chara;
         Animator Anim;
 
         public AnimationStateMachine(string initialState)
         {
             CurrentState = initialState;
-            Transitions = new Dictionary<string, Dictionary<string, Predicate<Chara>>>();
+            Transitions = new Dictionary<string, Dictionary<string, Predicate<Character>>>();
         }
         
         public override void OnStart()
         {
-            Chara = GetComponent<Chara>();
+            Chara = GetComponent<Character>();
             Anim = GetComponent<Animator>();
 
             if (Chara == null)
-                throw new InvalidOperationException("AnimationStateMachine requires a Chara.");
+                throw new InvalidOperationException("AnimationStateMachine requires a Character.");
 
             if (Anim == null)
                 throw new InvalidOperationException("AnimationStateMachine requires an Animator.");
@@ -47,10 +47,10 @@ namespace Vegricht.RoguelikeEva.Components
             }
         }
 
-        public void AddTransition(string from, string to, Predicate<Chara> condition)
+        public void AddTransition(string from, string to, Predicate<Character> condition)
         {
             if (!Transitions.ContainsKey(from))
-                Transitions.Add(from, new Dictionary<string, Predicate<Chara>>());
+                Transitions.Add(from, new Dictionary<string, Predicate<Character>>());
 
             else if (Transitions[from].ContainsKey(to))
                 throw new InvalidOperationException("The state machine already contains this transition.");

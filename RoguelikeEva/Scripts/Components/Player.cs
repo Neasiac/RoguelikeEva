@@ -12,12 +12,12 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public MapNode SelectedNode { get; private set; }
         public PlayerMode Mode { get; set; }
-        public List<Chara> Charas { get; private set; } = new List<Chara>(4);
 
         bool SelectionInvalidated;
         Color HighlightColor;
         HashSet<MapNode> ToHighlight;
         HashSet<MapNode> ToDehighlight;
+        TurnManager TM;
 
         public enum PlayerMode
         {
@@ -46,22 +46,19 @@ namespace Vegricht.RoguelikeEva.Components
             ToDehighlight = nodes;
         }
 
-        public void NextTurn()
+        public HashSet<Hero> GetHeroes()
         {
-            foreach (Chara chara in Charas)
-            {
-                Chara.Status speed = chara.Speed;
-                speed.Remaining = speed.Max;
-                chara.Speed = speed;
-
-                if (chara.Selected)
-                {
-                    chara.Selected = false;
-                    RequestDehighlight(chara.Reachable);
-                }
-            }
+            return TM.Heroes;
         }
-        
+
+        public override void OnStart()
+        {
+            TM = GetComponent<TurnManager>();
+
+            if (TM == null)
+                throw new InvalidOperationException("Player requires a TurnManager.");
+        }
+
         public override void Update(GameTime gameTime)
         {
             /*if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))

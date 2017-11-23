@@ -13,9 +13,8 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public Transform Trans { get; private set; }
 
-        // Height and width of the viewport window which we need to adjust
-        // any time the player resizes the game window. Not handled, since
-        // resizing game window is disabled.
+        // Height and width of the viewport window need to be adjusted everytime the player resizes the game window.
+        // Not handled, since resizing game window is disabled.
         public int ViewportWidth { get; private set; }
         public int ViewportHeight { get; private set; }
         
@@ -32,7 +31,6 @@ namespace Vegricht.RoguelikeEva.Components
                 throw new InvalidOperationException("Camera requires a Transform.");
         }
         
-        // Center of the Viewport which does not account for scale
         public Vector2 ViewportCenter
         {
             get
@@ -40,11 +38,7 @@ namespace Vegricht.RoguelikeEva.Components
                 return new Vector2(ViewportWidth * 0.5f, ViewportHeight * 0.5f);
             }
         }
-
-        // Create a matrix for the camera to offset everything we draw,
-        // the map and our objects. since the camera coordinates are where
-        // the camera is, we offset everything by the negative of that to simulate
-        // a camera moving. We also cast to integers to avoid filtering artifacts.
+        
         public Matrix TranslationMatrix()
         {
             return Matrix.CreateTranslation(-(int)Trans.Position.X, -(int)Trans.Position.Y, 0) *

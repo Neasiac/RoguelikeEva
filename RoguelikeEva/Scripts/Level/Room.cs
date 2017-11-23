@@ -50,7 +50,6 @@ namespace Vegricht.RoguelikeEva.Level
             foreach (MapNode node in Nodes)
             {
                 SpriteRenderer renderer = node.GetComponent<SpriteRenderer>();
-               // node.GetComponent<Transform>().Scale = View != Visibility.Undiscovered ? Vector2.One : new Vector2(0.16f); // FIXME: united scale !
                 bool configurationFound = false;
 
                 switch (View)
@@ -67,6 +66,9 @@ namespace Vegricht.RoguelikeEva.Level
                         renderer.Sprite = Map.WallGraphics;
                         return;
                 }
+
+                if (node.OccupiedBy != null)
+                    node.OccupiedBy.GetComponent<SpriteRenderer>().Active = View == Visibility.Visible;
 
                 LinkedNeighbors[] configurations = new LinkedNeighbors[16]
                     {

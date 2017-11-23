@@ -36,6 +36,19 @@ namespace Vegricht.RoguelikeEva.Animations
             }
         }
 
+        public int Length
+        {
+            get
+            {
+                int total = 0;
+
+                foreach (Frame frame in Frames)
+                    total += frame.Duration;
+
+                return total;
+            }
+        }
+
         // Indicates change of the current sprite since last update
         public int Version
         {

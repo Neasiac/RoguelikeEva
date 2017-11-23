@@ -31,7 +31,7 @@ namespace Vegricht.RoguelikeEva
             SceneManager.Instance.ContentManager = Content;
             SceneManager.Instance.GraphicsManager = graphics;
             //SceneManager.Instance.WorldScale = 150;
-            SceneManager.Instance.SetScene(new IntroScene());
+            SceneManager.Instance.SetScene(new ArenaScene());
             IsMouseVisible = true;
 
             base.Initialize();

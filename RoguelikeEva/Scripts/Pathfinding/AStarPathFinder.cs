@@ -12,7 +12,14 @@ namespace Vegricht.RoguelikeEva.Pathfinding
 {
     class AStarPathFinder
     {
-        public MapNode[] Find(MapNode from, MapNode to)
+        Path.PathAction Action;
+
+        public AStarPathFinder(Path.PathAction action)
+        {
+            Action = action;
+        }
+
+        public Path Find(MapNode from, MapNode to)
         {
             HashSet<MapNode> closed = new HashSet<MapNode>();
             HashedFibonacciHeap<MapNode, int> fringe = new HashedFibonacciHeap<MapNode, int>(0);
@@ -63,7 +70,7 @@ namespace Vegricht.RoguelikeEva.Pathfinding
             return Math.Abs(from.X - to.X) - Math.Abs(from.Y - to.Y);
         }
 
-        MapNode[] ReconstructPath(Dictionary<MapNode, MapNode> cameFrom, MapNode current)
+        Path ReconstructPath(Dictionary<MapNode, MapNode> cameFrom, MapNode current)
         {
             List<MapNode> path = new List<MapNode>();
             path.Add(current);
@@ -75,7 +82,7 @@ namespace Vegricht.RoguelikeEva.Pathfinding
             }
 
             path.Reverse();
-            return path.ToArray();
+            return new Path(path, Action);
         }
         
         class Score
