@@ -13,12 +13,14 @@ namespace Vegricht.RoguelikeEva.Components
 {
     class Hero : Character
     {
+        public string Name { get; private set; }
         public bool Selected { get; set; }
         Player Player;
         Color HighlightColor;
         
-        public Hero(GameObject globalScripts, MapNode position, Color highlightColor, int speed, int hp, int atk, CombatManager.CombatType type)
+        public Hero(string name, GameObject globalScripts, MapNode position, Color highlightColor, int speed, int hp, int atk, CombatManager.CombatType type)
         {
+            Name = name;
             CM = globalScripts.GetComponent<CombatManager>();
             Player = globalScripts.GetComponent<Player>();
             Tile = position;
@@ -66,7 +68,7 @@ namespace Vegricht.RoguelikeEva.Components
                 && Player.SelectedNode.OccupiedBy.GetComponent<Hero>() != null) // it's occupied by an allied unit (including us)
             {
                 Selected = false;
-                Player.RequestDehighlight(Reachable);
+                Player.InvalidateHighlight(Reachable);
 
                 if (Player.SelectedNode == Tile)
                     Player.InvalidateSelection();
@@ -84,11 +86,6 @@ namespace Vegricht.RoguelikeEva.Components
                 && (Player.SelectedNode.OccupiedBy == null || Player.SelectedNode.OccupiedBy.GetComponent<Hero>() == null) // the map node is not occupied by an allied unit
                 && Reachable != null && Reachable.Contains(Player.SelectedNode)) // destination tile is reachable
             {
-                // forbid user interaction while moving
-                Player.InvalidateSelection();
-                Player.Mode = Player.PlayerMode.Waiting;
-                Player.RequestDehighlight(Reachable);
-
                 // action upon completion
                 Path.PathAction action;
                 if (Player.SelectedNode.OccupiedBy == null)
@@ -97,7 +94,21 @@ namespace Vegricht.RoguelikeEva.Components
                     action = Path.PathAction.Attack;
                 else
                     action = Path.PathAction.Use;
-                
+
+                // if we're attacking, check whether we still can
+                if (action == Path.PathAction.Attack)
+                {
+                    if (AlreadyAttacked)
+                        return false;
+
+                    AlreadyAttacked = true;
+                }
+
+                // forbid user interaction while moving
+                Player.InvalidateSelection();
+                Player.Mode = Player.PlayerMode.Waiting;
+                Player.InvalidateHighlight(Reachable);
+
                 // initilize movement
                 AStarPathFinder pf = new AStarPathFinder(action);
                 Path = pf.Find(Tile, Player.SelectedNode);
@@ -110,29 +121,29 @@ namespace Vegricht.RoguelikeEva.Components
             return false;
         }
 
-        bool AlliedUnitInRoom(Room room)
-        {
-            foreach (Hero chara in Player.GetHeroes())
-                if (chara.Tile.Room == room)
-                    return true;
-
-            return false;
-        }
-
         bool ExpandCondition(MapNode node)
         {
             return node.Room.View == Room.Visibility.Visible;
         }
 
-        override protected void FindReachableTiles(Predicate<MapNode> expandCondition)
+        public bool AlliedUnitInRoom(Room room)
+        {
+            foreach (Hero chara in Player.GetHeroes())
+                if (chara.Tile.Room == room && chara.Alive)
+                    return true;
+
+            return false;
+        }
+
+        public override void FindReachableTiles(Predicate<MapNode> expandCondition)
         {
             base.FindReachableTiles(expandCondition);
 
             // Visualize reachable tiles
             Player.RequestHighlight(Reachable, HighlightColor);
         }
-        
-        override protected void FinalizePath()
+
+        protected override void FinalizePath()
         {
             // if destination room isn't visible, make it
             if (Tile.Room.View != Room.Visibility.Visible)

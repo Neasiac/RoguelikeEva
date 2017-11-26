@@ -7,26 +7,79 @@ using Vegricht.RoguelikeEva.Animations;
 using Microsoft.Xna.Framework.Input;
 using Vegricht.RoguelikeEva.Pathfinding;
 using Vegricht.RoguelikeEva.Level;
+using Vegricht.RoguelikeEva.AI;
 
 namespace Vegricht.RoguelikeEva.Components
 {
     class Monster : Character
     {
-        public Monster(CombatManager cm, MapNode position, int speed, int hp, int atk, CombatManager.CombatType type)
+        public bool Finished { get; set; }
+        public bool TakingTurn { get; private set; }
+        public MonsterPrototype Species { get; private set; }
+        SpriteRenderer Renderer;
+        IState CurrentState;
+
+        public Monster(CombatManager cm, MapNode position, MonsterPrototype prototype)
         {
             CM = cm;
             Tile = position;
-            Speed = new Status(speed);
-            HitPoints = new Status(hp);
-            Strength = atk;
-            Type = type;
+            Speed = new Status(prototype.Speed);
+            HitPoints = new Status(prototype.HitPoints);
+            Strength = prototype.Strength;
+            Type = prototype.Type;
+            Species = prototype;
+            CurrentState = new Patrolling(this);
         }
-        
+
+        public override void OnStart()
+        {
+            Renderer = GetComponent<SpriteRenderer>();
+
+            if (Renderer == null)
+                throw new InvalidOperationException("Monster requires a SpriteRenderer.");
+
+            base.OnStart();
+        }
+
         public override void Update(GameTime gameTime)
         {
-            // TODO stuff
+            if (Path != null && CurrentWaypoint < Path.Length)
+            {
+                if (!Renderer.Active && Path[CurrentWaypoint].Room.View == Room.Visibility.Visible)
+                    Renderer.Active = true;
+
+                else if (Renderer.Active && Path[CurrentWaypoint].Room.View != Room.Visibility.Visible)
+                    Renderer.Active = false;
+            }
 
             base.Update(gameTime);
+        }
+
+        public void UpdatePossibleTypes(CombatManager.CombatType possibleTypes)
+        {
+            Species.PossibleTypes &= possibleTypes;
+        }
+
+        public void InitiateTurn()
+        {
+            CurrentState = CurrentState.DecideStrategy();
+            Path = CurrentState.InitiateTurn();
+
+            if (Path == null)
+                Finished = true;
+            else
+                TakingTurn = true;
+        }
+
+        protected override void FinalizePath()
+        {
+            base.FinalizePath();
+
+            if (Path == null)
+            {
+                TakingTurn = false;
+                Finished = true;
+            }
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Vegricht.RoguelikeEva.Components
         public Path Path { get; protected set; }
         public int CurrentWaypoint { get; protected set; }
         public bool Attacking { get; set; }
+        public bool AlreadyAttacked { get; set; }
 
         const float NextWaypoint = 2;
         const float NextWaypointSquared = NextWaypoint * NextWaypoint;
@@ -72,13 +73,8 @@ namespace Vegricht.RoguelikeEva.Components
 
         public override void Update(GameTime gameTime)
         {
-            HandleMovement(gameTime);
-        }
-        
-        void HandleMovement(GameTime gameTime)
-        {
             // No path -> no movement
-            // Attacking -> playing the sword animation
+            // Attacking -> playing the sword animation -> no movement
             if (Path == null || Attacking)
                 return;
 
@@ -89,7 +85,7 @@ namespace Vegricht.RoguelikeEva.Components
                 FinalizePath();
                 return;
             }
-            
+
             // Move
             Vector2 dir = Path[CurrentWaypoint].Position - Trans.Position;
             if (dir.LengthSquared() > 0) dir.Normalize();
@@ -100,8 +96,8 @@ namespace Vegricht.RoguelikeEva.Components
             if (Vector2.DistanceSquared(Trans.Position, Path[CurrentWaypoint].Position) < NextWaypointSquared)
                 Tile = Path[CurrentWaypoint++];
         }
-        
-        virtual protected void FindReachableTiles(Predicate<MapNode> expandCondition)
+
+        public virtual void FindReachableTiles(Predicate<MapNode> expandCondition)
         {
             // Breadth first search with remaining speed as limit
             Reachable = new HashSet<MapNode>();
@@ -134,8 +130,8 @@ namespace Vegricht.RoguelikeEva.Components
                 Reachable.Add(node.Node);
             }
         }
-        
-        virtual protected void FinalizePath()
+
+        protected virtual void FinalizePath()
         {
             // Update speed
             if (Path.Action != Path.PathAction.Retreat)
@@ -147,9 +143,7 @@ namespace Vegricht.RoguelikeEva.Components
 
             // Using an item?
             if (Path.Action == Path.PathAction.Use)
-            {
-                // TODO
-            }
+                Tile.OccupiedBy.GetComponent<Item>().Use(this);
 
             // Attacking?
             bool startedRetreating = false;

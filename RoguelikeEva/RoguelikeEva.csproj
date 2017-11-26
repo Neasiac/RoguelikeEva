@@ -61,15 +61,22 @@
   <ItemGroup>
     <Compile Include="Externals\FibonacciHeap\FibonacciHeap.cs" />
     <Compile Include="Externals\FibonacciHeap\FibonacciHeapNode.cs" />
+    <Compile Include="Scripts\AI\Patrolling.cs" />
+    <Compile Include="Scripts\AI\IState.cs" />
     <Compile Include="Scripts\Components\AnimationStateMachine.cs" />
+    <Compile Include="Scripts\Components\MouseInteractable.cs" />
+    <Compile Include="Scripts\Components\Hoverable.cs" />
+    <Compile Include="Scripts\Components\Item.cs" />
     <Compile Include="Scripts\Components\CombatManager.cs" />
     <Compile Include="Scripts\Components\CameraFollow.cs" />
     <Compile Include="Scripts\Components\Character.cs" />
     <Compile Include="Scripts\Components\Monster.cs" />
+    <Compile Include="Scripts\Components\FontRenderer.cs" />
     <Compile Include="Scripts\Components\TurnManager.cs" />
     <Compile Include="Scripts\Level\Room.cs" />
     <Compile Include="Scripts\Level\Map.cs" />
     <Compile Include="Scripts\Components\Hero.cs" />
+    <Compile Include="Scripts\MonsterPrototype.cs" />
     <Compile Include="Scripts\Pathfinding\HashedFibonacciHeap.cs" />
     <Compile Include="Scripts\Pathfinding\AStarPathFinder.cs" />
     <Compile Include="Scripts\Animations\Animation.cs" />

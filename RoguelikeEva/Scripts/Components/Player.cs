@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Vegricht.RoguelikeEva.Components.Core;
 using Vegricht.RoguelikeEva.Animations;
 using Microsoft.Xna.Framework.Input;
+using Vegricht.RoguelikeEva.Level;
 
 namespace Vegricht.RoguelikeEva.Components
 {
@@ -12,45 +13,24 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public MapNode SelectedNode { get; private set; }
         public PlayerMode Mode { get; set; }
+        public FontRenderer Infobox { get; set; }
 
         bool SelectionInvalidated;
         Color HighlightColor;
         HashSet<MapNode> ToHighlight;
         HashSet<MapNode> ToDehighlight;
+        string ToInfobox;
+        object InfoboxOwner;
+        Room ToDarken;
         TurnManager TM;
-
+        
         public enum PlayerMode
         {
             Thinking,
-            Waiting
-        }
-
-        public void SelectNode(MapNode node)
-        {
-            SelectedNode = node ?? throw new ArgumentNullException();
-        }
-
-        public void InvalidateSelection()
-        {
-            SelectionInvalidated = true;
+            Waiting,
+            EnemyTurn
         }
         
-        public void RequestHighlight(HashSet<MapNode> nodes, Color color)
-        {
-            ToHighlight = nodes;
-            HighlightColor = color;
-        }
-
-        public void RequestDehighlight(HashSet<MapNode> nodes)
-        {
-            ToDehighlight = nodes;
-        }
-
-        public HashSet<Hero> GetHeroes()
-        {
-            return TM.Heroes;
-        }
-
         public override void OnStart()
         {
             TM = GetComponent<TurnManager>();
@@ -90,6 +70,66 @@ namespace Vegricht.RoguelikeEva.Components
 
                 ToHighlight = null;
             }
+
+            if (ToInfobox != null)
+            {
+                Infobox.Active = true;
+                Infobox.Text = ToInfobox;
+            }
+            else
+            {
+                Infobox.Active = false;
+                ToInfobox = null;
+            }
+
+            if (ToDarken != null)
+            {
+                ToDarken.UpdateGraphics(Room.Visibility.Darkened);
+                ToDarken = null;
+            }
+        }
+
+        public void SelectNode(MapNode node)
+        {
+            SelectedNode = node ?? throw new ArgumentNullException();
+        }
+
+        public void InvalidateSelection()
+        {
+            SelectionInvalidated = true;
+        }
+
+        public void RequestHighlight(HashSet<MapNode> nodes, Color color)
+        {
+            ToHighlight = nodes;
+            HighlightColor = color;
+        }
+
+        public void InvalidateHighlight(HashSet<MapNode> nodes)
+        {
+            ToDehighlight = nodes;
+        }
+
+        public void RequestInfoboxOverride(string text, object owner)
+        {
+            ToInfobox = text;
+            InfoboxOwner = owner;
+        }
+
+        public void InvalidateInfoboxOverride(object owner)
+        {
+            if (InfoboxOwner == owner)
+                ToInfobox = null;
+        }
+
+        public void RequestDarkenRoom(Room room)
+        {
+            ToDarken = room;
+        }
+
+        public HashSet<Hero> GetHeroes()
+        {
+            return TM.Heroes;
         }
     }
 }

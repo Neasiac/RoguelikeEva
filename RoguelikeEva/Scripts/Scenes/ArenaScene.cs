@@ -21,8 +21,10 @@ namespace Vegricht.RoguelikeEva.Scenes
         Texture2D FloorDark;
         Texture2D Chara;
         Texture2D Monsters;
+        Texture2D Items;
         Texture2D NextTurn;
         Texture2D Sword;
+        SpriteFont Font;
 
         ushort[,] map = new ushort[30, 20]
             {
@@ -58,6 +60,7 @@ namespace Vegricht.RoguelikeEva.Scenes
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
 
+        GameObject Camera;
         GameObject GlobalScripts;
         Map Map;
 
@@ -68,21 +71,25 @@ namespace Vegricht.RoguelikeEva.Scenes
             FloorDark = Content.Load<Texture2D>("tiles dark");
             Chara = Content.Load<Texture2D>("chara");
             Monsters = Content.Load<Texture2D>("monsters");
+            Items = Content.Load<Texture2D>("items");
             NextTurn = Content.Load<Texture2D>("nextturn");
             Sword = Content.Load<Texture2D>("sword");
+            Font = Content.Load<SpriteFont>("georgia");
         }
 
         public override void OnInitiate()
         {
             CreateMechanics();
+            CreateUI();
             CreateMap();
             CreateCharacters();
             CreateMonsters();
+            CreateItems();
         }
 
         void CreateMechanics()
         {
-            GameObject camera = new GameObjectBuilder()
+            Camera = new GameObjectBuilder()
                 .AddComponent(new Transform(Vector2.Zero))
                 .AddComponent(new Camera())
                 .Register(this);
@@ -97,18 +104,33 @@ namespace Vegricht.RoguelikeEva.Scenes
 
             GlobalScripts = new GameObjectBuilder()
                 .AddComponent(new Player())
-                .AddComponent(new MapPanner(camera.GetComponent<Camera>()))
+                .AddComponent(new MapPanner(Camera.GetComponent<Camera>()))
                 .AddComponent(new TurnManager())
                 .AddComponent(new CombatManager(sword))
                 .Register(this);
+        }
+
+        void CreateUI()
+        {
+            Camera camera = Camera.GetComponent<Camera>();
+            FontRenderer font = new FontRenderer(Font, "Hello World!", 0);
 
             GameObject nextturn = new GameObjectBuilder()
                 .AddComponent(new Transform(Vector2.Zero, new Vector2(.2f)))
                 .AddComponent(new SpriteRenderer(NextTurn, 0))
                 .AddComponent(new Dimentions(0, 0, 50, 50))
                 .AddComponent(new Clickable(GlobalScripts.GetComponent<TurnManager>().NextTurn))
-                .AddComponent(new CameraFollow(camera.GetComponent<Camera>()))
+                .AddComponent(new CameraFollow(camera, Vector2.Zero))
                 .Register(this);
+
+            GameObject infobox = new GameObjectBuilder()
+                .AddComponent(new Transform(Vector2.Zero))
+                .AddComponent(font)
+                .AddComponent(new CameraFollow(camera, new Vector2(0, SceneManager.Instance.ViewportRectangle.Height - 5 * Font.LineSpacing)))
+                .Register(this);
+            
+            font.Active = false;
+            GlobalScripts.GetComponent<Player>().Infobox = font;
         }
 
         void CreateMap()
@@ -146,48 +168,100 @@ namespace Vegricht.RoguelikeEva.Scenes
         
         void CreateCharacters()
         {
-            GameObject chara1 = new GameObjectBuilder()
-                .AddComponent(new Transform(new Vector2(Map.Size * 10, Map.Size * 4)))
-                .AddComponent(new SpriteRenderer(Chara))
-                .AddComponent(CreateAnimator(Chara, 1, 0))
-                .AddComponent(CreateAnimationStateMachine(Map.Size))
-                .AddComponent(new Hero(GlobalScripts, Map[10, 4], Color.Yellow, 8, 10, 4, CombatManager.CombatType.Lizard))
-                .Register(this);
-
-            GameObject chara2 = new GameObjectBuilder()
-                .AddComponent(new Transform(new Vector2(Map.Size * 2, Map.Size)))
-                .AddComponent(new SpriteRenderer(Chara))
-                .AddComponent(CreateAnimator(Chara, 0, 1))
-                .AddComponent(CreateAnimationStateMachine(Map.Size))
-                .AddComponent(new Hero(GlobalScripts, Map[2, 1], Color.Orange, 8, 10, 4, CombatManager.CombatType.Spock))
-                .Register(this);
-
             GlobalScripts.GetComponent<Player>().Mode = Player.PlayerMode.Thinking;
-
-            Map[10, 4].OccupiedBy = chara1;
-            Map[2, 1].OccupiedBy = chara2;
-            Map[10, 4].Room.UpdateGraphics(Room.Visibility.Visible);
-            Map[2, 1].Room.UpdateGraphics(Room.Visibility.Visible);
-
-            GlobalScripts.GetComponent<TurnManager>().Heroes.Add(chara1.GetComponent<Hero>());
-            GlobalScripts.GetComponent<TurnManager>().Heroes.Add(chara2.GetComponent<Hero>());
+            CreateHero("Lemon", 1, 0, 10, 4, Color.Yellow, 8, 10, 4, CombatManager.CombatType.Lizard);
+            CreateHero("Orange", 0, 1, 2, 1, Color.Orange, 8, 10, 4, CombatManager.CombatType.Spock);
         }
 
         void CreateMonsters()
         {
-            CombatManager cm = GlobalScripts.GetComponent<CombatManager>();
-
-            GameObject mon1 = new GameObjectBuilder()
-                .AddComponent(new Transform(new Vector2(Map.Size * 3, Map.Size * 2)))
-                .AddComponent(new SpriteRenderer(Monsters))
-                .AddComponent(CreateAnimator(Monsters, 1, 0))
-                .AddComponent(CreateAnimationStateMachine(Map.Size))
-                .AddComponent(new Monster(cm, Map[10, 4], 8, 10, 4, CombatManager.CombatType.Paper)) // paper -> stong against near ally, scissors -> the other way around
-                .Register(this);
-
-            Map[3, 2].OccupiedBy = mon1;
+            MonsterPrototype prototype = new MonsterPrototype("Snake Monster", 8, 15, 4, CombatManager.CombatType.Paper);
+            CreateMonster(prototype, 1, 0, 2, 3);
+            CreateMonster(prototype, 1, 0, 9, 9);
         }
 
+        void CreateItems()
+        {
+            Player player = GlobalScripts.GetComponent<Player>();
+            Item itemComponent = new Item(chara =>
+                {
+                    Character.Status spd = chara.Speed;
+                    spd.Remaining = spd.Max;
+                    chara.Speed = spd;
+                });
+
+            GameObject item1 = new GameObjectBuilder()
+                .AddComponent(new Transform(new Vector2(Map.Size * 4, Map.Size * 3)))
+                .AddComponent(new SpriteRenderer(Items, new Rectangle(Map.Size * 9, Map.Size * 4, Map.Size, Map.Size)))
+                .AddComponent(itemComponent)
+                .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
+                .AddComponent(new Hoverable(() => player.RequestInfoboxOverride(
+                        "<Poition of Speed>" + Environment.NewLine +
+                        "Fills your speed to max.",
+                    itemComponent), () => player.InvalidateInfoboxOverride(itemComponent)))
+                .Register(this);
+
+            Map[4, 3].OccupiedBy = item1;
+        }
+
+        GameObject CreateHero(string name, int spriteX, int spriteY, int posX, int posY, Color col, int speed, int hp, int atk, CombatManager.CombatType type)
+        {
+            Hero heroComponent = new Hero(name, GlobalScripts, Map[posX, posY], col, speed, hp, atk, type);
+            Player player = GlobalScripts.GetComponent<Player>();
+
+            GameObject hero = new GameObjectBuilder()
+                .AddComponent(new Transform(new Vector2(Map.Size * posX, Map.Size * posY)))
+                .AddComponent(new SpriteRenderer(Chara))
+                .AddComponent(CreateAnimator(Chara, spriteX, spriteY))
+                .AddComponent(CreateAnimationStateMachine(Map.Size))
+                .AddComponent(heroComponent)
+                .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
+                .AddComponent(new Hoverable(() => player.RequestInfoboxOverride(
+                        "<" + heroComponent.Name + ">" + Environment.NewLine +
+                        "HP: " + heroComponent.HitPoints.Remaining + " / " + heroComponent.HitPoints.Max + Environment.NewLine +
+                        "Speed: " + heroComponent.Speed.Max + Environment.NewLine +
+                        "Strength: " + heroComponent.Strength + Environment.NewLine +
+                        "Type: " + heroComponent.Type,
+                    heroComponent), () => player.InvalidateInfoboxOverride(heroComponent)))
+                .Register(this);
+            
+            Map[posX, posY].OccupiedBy = hero;
+            Map[posX, posY].Room.UpdateGraphics(Room.Visibility.Visible);
+
+            GlobalScripts.GetComponent<TurnManager>().Heroes.Add(heroComponent);
+            return hero;
+        }
+
+        GameObject CreateMonster(MonsterPrototype prototype, int spriteX, int spriteY, int posX, int posY)
+        {
+            Monster monsterComponent = new Monster(GlobalScripts.GetComponent<CombatManager>(), Map[posX, posY], prototype);
+            Player player = GlobalScripts.GetComponent<Player>();
+
+            GameObject monster = new GameObjectBuilder()
+                .AddComponent(new Transform(new Vector2(Map.Size * posX, Map.Size * posY)))
+                .AddComponent(new SpriteRenderer(Monsters))
+                .AddComponent(CreateAnimator(Monsters, spriteX, spriteY))
+                .AddComponent(CreateAnimationStateMachine(Map.Size))
+                .AddComponent(monsterComponent)
+                .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
+                .AddComponent(new Hoverable(() => player.RequestInfoboxOverride(
+                        "<" + monsterComponent.Species + ">" + Environment.NewLine +
+                        "HP: " + monsterComponent.HitPoints.Remaining + " / " + monsterComponent.HitPoints.Max + Environment.NewLine +
+                        "Speed: " + monsterComponent.Speed.Max + Environment.NewLine +
+                        "Strength: " + monsterComponent.Strength + Environment.NewLine +
+                        "Possible Types: " + String.Join(", ", monsterComponent.Species.PossibleTypes),
+                            monsterComponent), () => player.InvalidateInfoboxOverride(monsterComponent)))
+                .Register(this);
+
+            Map[posX, posY].OccupiedBy = monster;
+
+            if (Map[posX, posY].Room.View != Room.Visibility.Visible)
+                monster.GetComponent<SpriteRenderer>().Active = false;
+
+            GlobalScripts.GetComponent<TurnManager>().Monsters.Add(monsterComponent);
+            return monster;
+        }
+        
         Animator CreateSwordAnimator(int duration = 30, int size = 48)
         {
             Animator animator = new Animator();

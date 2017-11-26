@@ -13,10 +13,12 @@ namespace Vegricht.RoguelikeEva.Components
     {
         Transform Trans;
         Camera Camera;
+        Vector2 Offset;
 
-        public CameraFollow(Camera camera)
+        public CameraFollow(Camera camera, Vector2 offset)
         {
             Camera = camera ?? throw new ArgumentNullException();
+            Offset = offset;
         }
         
         public override void OnStart()
@@ -29,7 +31,7 @@ namespace Vegricht.RoguelikeEva.Components
 
         public override void Update(GameTime gameTime)
         {
-            Trans.Position = Camera.Trans.Position - new Vector2(Camera.ViewportWidth / 2, Camera.ViewportHeight / 2);
+            Trans.Position = Offset + Camera.Trans.Position - new Vector2(Camera.ViewportWidth / 2, Camera.ViewportHeight / 2);
         }
     }
 }

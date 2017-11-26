@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # Tento soubor .gitignore byl automaticky vytvořen aplikací Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -15,4 +15,5 @@
 /RoguelikeEva/obj/x86/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 /RoguelikeEva/obj/x86/Debug/CoreCompileInputs.cache
 /RoguelikeEva/obj/x86/Debug
-/RoguelikeEva/FibonacciHeap.cs
+/RoguelikeEva/Externals/FibonacciHeap/FibonacciHeap.cs
+/RoguelikeEva/Externals/FibonacciHeap/FibonacciHeapNode.cs
