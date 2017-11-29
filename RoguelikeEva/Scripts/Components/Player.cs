@@ -21,7 +21,6 @@ namespace Vegricht.RoguelikeEva.Components
         HashSet<MapNode> ToDehighlight;
         string ToInfobox;
         object InfoboxOwner;
-        Room ToDarken;
         TurnManager TM;
         
         public enum PlayerMode
@@ -81,12 +80,6 @@ namespace Vegricht.RoguelikeEva.Components
                 Infobox.Active = false;
                 ToInfobox = null;
             }
-
-            if (ToDarken != null)
-            {
-                ToDarken.UpdateGraphics(Room.Visibility.Darkened);
-                ToDarken = null;
-            }
         }
 
         public void SelectNode(MapNode node)
@@ -120,11 +113,6 @@ namespace Vegricht.RoguelikeEva.Components
         {
             if (InfoboxOwner == owner)
                 ToInfobox = null;
-        }
-
-        public void RequestDarkenRoom(Room room)
-        {
-            ToDarken = room;
         }
 
         public HashSet<Hero> GetHeroes()

@@ -41,11 +41,12 @@ namespace Vegricht.RoguelikeEva.Components
         public Status Speed { get; set; }
         public Status HitPoints { get; set; }
         public int Strength { get; set; }
-        public CombatManager.CombatType Type { get; protected set; }
-        public Path Path { get; protected set; }
-        public int CurrentWaypoint { get; protected set; }
         public bool Attacking { get; set; }
         public bool AlreadyAttacked { get; set; }
+        public Path Path { get; protected set; }
+        public int CurrentWaypoint { get; protected set; }
+        public CombatManager.CombatType Type { get; protected set; }
+        public abstract CombatManager.CombatType EnemyAwareness { get; set; }
 
         const float NextWaypoint = 2;
         const float NextWaypointSquared = NextWaypoint * NextWaypoint;

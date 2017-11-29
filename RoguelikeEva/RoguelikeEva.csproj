@@ -61,8 +61,11 @@
   <ItemGroup>
     <Compile Include="Externals\FibonacciHeap\FibonacciHeap.cs" />
     <Compile Include="Externals\FibonacciHeap\FibonacciHeapNode.cs" />
+    <Compile Include="Scripts\AI\Chasing.cs" />
+    <Compile Include="Scripts\AI\Retreating.cs" />
+    <Compile Include="Scripts\AI\Attacking.cs" />
     <Compile Include="Scripts\AI\Patrolling.cs" />
-    <Compile Include="Scripts\AI\IState.cs" />
+    <Compile Include="Scripts\AI\AIState.cs" />
     <Compile Include="Scripts\Components\AnimationStateMachine.cs" />
     <Compile Include="Scripts\Components\MouseInteractable.cs" />
     <Compile Include="Scripts\Components\Hoverable.cs" />

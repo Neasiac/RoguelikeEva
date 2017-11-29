@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Vegricht.RoguelikeEva.Pathfinding;
 using Vegricht.RoguelikeEva.Level;
 using Vegricht.RoguelikeEva.AI;
+using Vegricht.RoguelikeEva.Scenes.Core;
 
 namespace Vegricht.RoguelikeEva.Components
 {
@@ -17,20 +18,33 @@ namespace Vegricht.RoguelikeEva.Components
         public bool TakingTurn { get; private set; }
         public MonsterPrototype Species { get; private set; }
         SpriteRenderer Renderer;
-        IState CurrentState;
+        AIState CurrentState;
 
-        public Monster(CombatManager cm, MapNode position, MonsterPrototype prototype)
+        public override CombatManager.CombatType EnemyAwareness
         {
-            CM = cm;
+            get
+            {
+                return Species.EnemyAwareness;
+            }
+
+            set
+            {
+                Species.EnemyAwareness = value;
+            }
+        }
+
+        public Monster(GameObject globalScripts, MapNode position, MonsterPrototype prototype)
+        {
+            CM = globalScripts.GetComponent<CombatManager>();
             Tile = position;
             Speed = new Status(prototype.Speed);
             HitPoints = new Status(prototype.HitPoints);
             Strength = prototype.Strength;
             Type = prototype.Type;
             Species = prototype;
-            CurrentState = new Patrolling(this);
+            CurrentState = new Patrolling(this, globalScripts.GetComponent<TurnManager>().Heroes);
         }
-
+        
         public override void OnStart()
         {
             Renderer = GetComponent<SpriteRenderer>();
@@ -54,12 +68,7 @@ namespace Vegricht.RoguelikeEva.Components
 
             base.Update(gameTime);
         }
-
-        public void UpdatePossibleTypes(CombatManager.CombatType possibleTypes)
-        {
-            Species.PossibleTypes &= possibleTypes;
-        }
-
+        
         public void InitiateTurn()
         {
             CurrentState = CurrentState.DecideStrategy();

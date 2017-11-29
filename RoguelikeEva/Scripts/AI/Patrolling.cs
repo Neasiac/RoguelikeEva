@@ -1,60 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using Vegricht.RoguelikeEva.Components;
-using Vegricht.RoguelikeEva.Scenes.Core;
-using System.Collections;
 using Vegricht.RoguelikeEva.Level;
 using Vegricht.RoguelikeEva.Pathfinding;
 
 namespace Vegricht.RoguelikeEva.AI
 {
-    class Patrolling : IState
+    class Patrolling : AIState
     {
-        Monster Monster;
-
-        public Patrolling(Monster monster)
+        public Patrolling(Monster monster, HashSet<Hero> heroes)
         {
             Monster = monster;
+            Heroes = heroes;
         }
 
-        public IState DecideStrategy()
+        public override AIState DecideStrategy()
         {
-            return this;
-        }
+            base.DecideStrategy();
 
-        public Path InitiateTurn()
-        {
-            // action upon completion
-            Path.PathAction action;
-            if (Monster.Tile.Neighbors[0].OccupiedBy == null)
-                action = Path.PathAction.Move;
-            else if (Monster.Tile.Neighbors[0].OccupiedBy.GetComponent<Hero>() != null)
-                action = Path.PathAction.Attack;
+            if (Candidate == null)
+                return this;
+
+            else if (CandidateScore >= 0)
+                return new Attacking(Monster, Candidate, Heroes);
+
+            else if (Monster.Tile.Room.View == Room.Visibility.Visible)
+                return new Retreating(Monster, Heroes);
+
             else
-                action = Path.PathAction.Use;
+                return this;
+        }
 
-            // if we're attacking, check whether we still can
-            if (action == Path.PathAction.Attack)
+        public override Path InitiateTurn()
+        {
+            Random rnd = new Random();
+            MapNode goal = null;
+            int attempts = 0;
+
+            while (goal == null || goal.OccupiedBy != null)
             {
-                if (Monster.AlreadyAttacked)
+                goal = Monster.Tile.Neighbors[rnd.Next(0, Monster.Tile.Neighbors.Count)];
+
+                if (attempts++ > 10)
                     return null;
-
-                Monster.AlreadyAttacked = true;
             }
-
-            // initilize movement
-            AStarPathFinder pf = new AStarPathFinder(action);
-            Path p = pf.Find(Monster.Tile, Monster.Tile.Neighbors[0]);
+            
+            AStarPathFinder pf = new AStarPathFinder(Path.PathAction.Move);
+            Path path = pf.Find(Monster.Tile, goal);
             Monster.Tile.OccupiedBy = null;
             Monster.Tile = null;
 
-            return p;
+            return path;
         }
     }
 }

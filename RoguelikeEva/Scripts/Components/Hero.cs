@@ -15,6 +15,8 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public string Name { get; private set; }
         public bool Selected { get; set; }
+        public override CombatManager.CombatType EnemyAwareness { get; set; }
+
         Player Player;
         Color HighlightColor;
         
@@ -29,6 +31,12 @@ namespace Vegricht.RoguelikeEva.Components
             HitPoints = new Status(hp);
             Strength = atk;
             Type = type;
+
+            EnemyAwareness = CombatManager.CombatType.Lizard |
+                             CombatManager.CombatType.Paper |
+                             CombatManager.CombatType.Rock |
+                             CombatManager.CombatType.Scissors |
+                             CombatManager.CombatType.Spock;
         }
         
         public override void Update(GameTime gameTime)

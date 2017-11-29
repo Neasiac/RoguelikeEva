@@ -19,7 +19,7 @@ namespace Vegricht.RoguelikeEva
         public int HitPoints { get; private set; }
         public int Strength { get; private set; }
         public CombatManager.CombatType Type { get; private set; }
-        public CombatManager.CombatType PossibleTypes { get; set; }
+        public CombatManager.CombatType EnemyAwareness { get; set; }
         
         public MonsterPrototype(string name, int speed, int hp, int atk, CombatManager.CombatType type)
         {
@@ -29,11 +29,11 @@ namespace Vegricht.RoguelikeEva
             Strength = atk;
             Type = type;
             
-            PossibleTypes = CombatManager.CombatType.Lizard |
-                            CombatManager.CombatType.Paper |
-                            CombatManager.CombatType.Rock |
-                            CombatManager.CombatType.Scissors |
-                            CombatManager.CombatType.Spock;
+            EnemyAwareness = CombatManager.CombatType.Lizard |
+                             CombatManager.CombatType.Paper |
+                             CombatManager.CombatType.Rock |
+                             CombatManager.CombatType.Scissors |
+                             CombatManager.CombatType.Spock;
         }
         
         public override string ToString()

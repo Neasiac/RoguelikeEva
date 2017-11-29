@@ -92,11 +92,9 @@ namespace Vegricht.RoguelikeEva.Components
         void SingleAttack(Character attacker, Character opponent)
         {
             TypeRelation relation = GetRelation(attacker.Type, opponent.Type);
+            opponent.EnemyAwareness &= GetPossibleTypes(attacker.Type, relation);
             float multiplier = relation == TypeRelation.Neutral ? 1 : (relation == TypeRelation.Advantage ? 2 : 0.5f);
-
-            if (opponent is Monster)
-                ((Monster)opponent).UpdatePossibleTypes(GetPossibleTypes(attacker.Type, relation));
-
+            
             Character.Status hp = opponent.HitPoints;
             hp.Remaining -= (int)Math.Round(multiplier * attacker.Strength);
             opponent.HitPoints = hp;
@@ -106,11 +104,14 @@ namespace Vegricht.RoguelikeEva.Components
                 opponent.Parent.Active = false;
 
                 if (opponent is Hero && !((Hero)opponent).AlliedUnitInRoom(opponent.Tile.Room))
-                    TM.Player.RequestDarkenRoom(opponent.Tile.Room);
+                {
+                    opponent.Tile.Room.UpdateGraphics(Room.Visibility.Darkened);
+                    attacker.GetComponent<SpriteRenderer>().Active = false;
+                }
             }
         }
 
-        TypeRelation GetRelation(CombatType attacker, CombatType opponent)
+        public static TypeRelation GetRelation(CombatType attacker, CombatType opponent)
         {
             if (attacker == opponent)
                 return TypeRelation.Neutral;

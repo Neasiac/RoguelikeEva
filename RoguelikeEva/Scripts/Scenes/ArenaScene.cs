@@ -177,7 +177,7 @@ namespace Vegricht.RoguelikeEva.Scenes
         {
             MonsterPrototype prototype = new MonsterPrototype("Snake Monster", 8, 15, 4, CombatManager.CombatType.Paper);
             CreateMonster(prototype, 1, 0, 2, 3);
-            CreateMonster(prototype, 1, 0, 9, 9);
+            //CreateMonster(prototype, 1, 0, 9, 9);
         }
 
         void CreateItems()
@@ -234,7 +234,7 @@ namespace Vegricht.RoguelikeEva.Scenes
 
         GameObject CreateMonster(MonsterPrototype prototype, int spriteX, int spriteY, int posX, int posY)
         {
-            Monster monsterComponent = new Monster(GlobalScripts.GetComponent<CombatManager>(), Map[posX, posY], prototype);
+            Monster monsterComponent = new Monster(GlobalScripts, Map[posX, posY], prototype);
             Player player = GlobalScripts.GetComponent<Player>();
 
             GameObject monster = new GameObjectBuilder()
@@ -249,7 +249,7 @@ namespace Vegricht.RoguelikeEva.Scenes
                         "HP: " + monsterComponent.HitPoints.Remaining + " / " + monsterComponent.HitPoints.Max + Environment.NewLine +
                         "Speed: " + monsterComponent.Speed.Max + Environment.NewLine +
                         "Strength: " + monsterComponent.Strength + Environment.NewLine +
-                        "Possible Types: " + String.Join(", ", monsterComponent.Species.PossibleTypes),
+                        "Possible Types: " + String.Join(", ", monsterComponent.Species.EnemyAwareness),
                             monsterComponent), () => player.InvalidateInfoboxOverride(monsterComponent)))
                 .Register(this);
 

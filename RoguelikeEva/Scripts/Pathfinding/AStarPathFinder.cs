@@ -67,7 +67,7 @@ namespace Vegricht.RoguelikeEva.Pathfinding
         // Manhattan distance
         int heuristic(MapNode from, MapNode to)
         {
-            return Math.Abs(from.X - to.X) - Math.Abs(from.Y - to.Y);
+            return Math.Abs(from.X - to.X) + Math.Abs(from.Y - to.Y);
         }
 
         Path ReconstructPath(Dictionary<MapNode, MapNode> cameFrom, MapNode current)
