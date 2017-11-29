@@ -59,18 +59,18 @@ namespace Vegricht.RoguelikeEva.AI
 
         protected int ScoreHero(Hero hero)
         {
-            byte advantage = 0, disadvantage = 0;
+            byte score = 0;
 
             foreach (CombatManager.CombatType type in Enum.GetValues(typeof(CombatManager.CombatType)))
                 if (hero.EnemyAwareness.HasFlag(type))
                 {
                     CombatManager.TypeRelation result = CombatManager.GetRelation(Monster.Type, type);
 
-                    if (result == CombatManager.TypeRelation.Advantage) advantage++;
-                    if (result == CombatManager.TypeRelation.Disadvantage) disadvantage++;
+                    if (result == CombatManager.TypeRelation.Advantage) score++;
+                    if (result == CombatManager.TypeRelation.Disadvantage) score--;
                 }
 
-            return advantage - disadvantage;
+            return score;
         }
     }
 }
