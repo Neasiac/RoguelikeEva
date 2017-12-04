@@ -22,6 +22,10 @@ namespace Vegricht.RoguelikeEva.Components
         string ToInfobox;
         object InfoboxOwner;
         TurnManager TM;
+
+#if DEBUG
+        bool Debugging;
+#endif
         
         public enum PlayerMode
         {
@@ -47,6 +51,17 @@ namespace Vegricht.RoguelikeEva.Components
             {
                 //
             }*/
+
+#if DEBUG
+            if (!Debugging && Keyboard.GetState().IsKeyDown(Keys.Tab))
+            {
+                Debugging = true;
+
+                foreach (Room room in GetComponent<MapPanner>().Map.Rooms)
+                    if (room.ID != 0)
+                        room.UpdateGraphics(Room.Visibility.Visible);
+            }
+#endif
 
             if (SelectionInvalidated)
             {

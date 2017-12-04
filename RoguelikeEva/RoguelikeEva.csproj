@@ -66,6 +66,7 @@
     <Compile Include="Scripts\AI\Attacking.cs" />
     <Compile Include="Scripts\AI\Patrolling.cs" />
     <Compile Include="Scripts\AI\AIState.cs" />
+    <Compile Include="Scripts\Types.cs" />
     <Compile Include="Scripts\Components\AnimationStateMachine.cs" />
     <Compile Include="Scripts\Components\MouseInteractable.cs" />
     <Compile Include="Scripts\Components\Hoverable.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Scenes\Core\Scene.cs" />
     <Compile Include="Scripts\Scenes\Core\SceneManager.cs" />
+    <Compile Include="Scripts\Serializable\MapBlueprint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

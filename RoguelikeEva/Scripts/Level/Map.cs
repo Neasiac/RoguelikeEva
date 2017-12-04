@@ -16,6 +16,7 @@ namespace Vegricht.RoguelikeEva.Level
         public static readonly int Size = 48;
         public MapNode[,] Grid { get; private set; }
         public IEnumerable<Room> Rooms { get; private set; }
+        public Room StartRoom { get; private set; }
 
         public Texture2D TileGraphics { get; private set; }
         public Texture2D DarkTilesGraphics { get; private set; }
@@ -68,10 +69,15 @@ namespace Vegricht.RoguelikeEva.Level
                     Grid[x, y].Room.Nodes.Add(Grid[x, y]);
         }
 
-        public void SetupRooms()
+        public void SetupRooms(int startRoomId)
         {
             foreach (Room room in Rooms)
+            {
+                if (room.ID == startRoomId)
+                    StartRoom = room;
+
                 room.Map = this;
+            }
         }
 
         public void SetNeighbors()

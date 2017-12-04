@@ -44,12 +44,34 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Externals\net-object-deep-copy\ObjectExtentions.cs" />
+    <Compile Include="Scripts\Evolution\BooleanIndividual.cs" />
+    <Compile Include="Scripts\Evolution\BitFlipMutation.cs" />
+    <Compile Include="Scripts\Evolution\SimpleFitness.cs" />
+    <Compile Include="Scripts\Evolution\BinPackingFitness.cs" />
+    <Compile Include="Scripts\Evolution\Heavy2LightMutation.cs" />
+    <Compile Include="Scripts\Evolution\SwapMutation.cs" />
+    <Compile Include="Scripts\Evolution\OnePointCrossover.cs" />
+    <Compile Include="Scripts\Evolution\IntegerMutation.cs" />
+    <Compile Include="Scripts\Evolution\IntegerIndividual.cs" />
+    <Compile Include="Scripts\Evolution\Operator.cs" />
+    <Compile Include="Scripts\Evolution\RouletteWheelSelector.cs" />
+    <Compile Include="Scripts\Evolution\Selector.cs" />
+    <Compile Include="Scripts\Evolution\Fitness.cs" />
+    <Compile Include="Scripts\Evolution\Generation.cs" />
+    <Compile Include="Scripts\Evolution\Individual.cs" />
+    <Compile Include="Scripts\Evolution\EvolutionaryAlgorithm.cs" />
+    <Compile Include="Scripts\Rectangle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Scripts\" />
+    <ProjectReference Include="..\RoguelikeEva\RoguelikeEva.csproj">
+      <Project>{1fc5ded9-6686-4f3c-b08c-03db52e82265}</Project>
+      <Name>RoguelikeEva</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

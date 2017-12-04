@@ -15,12 +15,12 @@ namespace Vegricht.RoguelikeEva.Components
     {
         public string Name { get; private set; }
         public bool Selected { get; set; }
-        public override CombatManager.CombatType EnemyAwareness { get; set; }
+        public override CombatType EnemyAwareness { get; set; }
 
         Player Player;
         Color HighlightColor;
         
-        public Hero(string name, GameObject globalScripts, MapNode position, Color highlightColor, int speed, int hp, int atk, CombatManager.CombatType type)
+        public Hero(string name, GameObject globalScripts, MapNode position, Color highlightColor, int speed, int hp, int atk, CombatType type)
         {
             Name = name;
             CM = globalScripts.GetComponent<CombatManager>();
@@ -32,11 +32,11 @@ namespace Vegricht.RoguelikeEva.Components
             Strength = atk;
             Type = type;
 
-            EnemyAwareness = CombatManager.CombatType.Lizard |
-                             CombatManager.CombatType.Paper |
-                             CombatManager.CombatType.Rock |
-                             CombatManager.CombatType.Scissors |
-                             CombatManager.CombatType.Spock;
+            EnemyAwareness = CombatType.Lizard |
+                             CombatType.Paper |
+                             CombatType.Rock |
+                             CombatType.Scissors |
+                             CombatType.Spock;
         }
         
         public override void Update(GameTime gameTime)

@@ -19,7 +19,7 @@ namespace Vegricht.RoguelikeEva.AI
         protected HashSet<Hero> Heroes;
         protected Monster Monster;
         protected Hero Candidate;
-        protected int CandidateScore;
+        protected sbyte CandidateScore;
 
         public virtual AIState DecideStrategy()
         {
@@ -42,7 +42,7 @@ namespace Vegricht.RoguelikeEva.AI
 
                 foreach (Hero hero in reachableHeroes)
                 {
-                    int currentScore = ScoreHero(hero);
+                    sbyte currentScore = ScoreHero(hero);
 
                     if (currentScore > CandidateScore)
                     {
@@ -57,17 +57,17 @@ namespace Vegricht.RoguelikeEva.AI
 
         public abstract Path InitiateTurn();
 
-        protected int ScoreHero(Hero hero)
+        protected sbyte ScoreHero(Hero hero)
         {
-            byte score = 0;
+            sbyte score = 0;
 
-            foreach (CombatManager.CombatType type in Enum.GetValues(typeof(CombatManager.CombatType)))
+            foreach (CombatType type in Enum.GetValues(typeof(CombatType)))
                 if (hero.EnemyAwareness.HasFlag(type))
                 {
-                    CombatManager.TypeRelation result = CombatManager.GetRelation(Monster.Type, type);
+                    TypeRelation result = Types.GetRelation(Monster.Type, type);
 
-                    if (result == CombatManager.TypeRelation.Advantage) score++;
-                    if (result == CombatManager.TypeRelation.Disadvantage) score--;
+                    if (result == TypeRelation.Advantage) score++;
+                    if (result == TypeRelation.Disadvantage) score--;
                 }
 
             return score;

@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Vegricht.RoguelikeEva.Components;
 using Vegricht.RoguelikeEva.Scenes.Core;
-using System.Collections;
 using Vegricht.RoguelikeEva.Level;
 using Vegricht.RoguelikeEva.Pathfinding;
 
@@ -31,10 +30,7 @@ namespace Vegricht.RoguelikeEva.AI
                 return new Chasing(Monster, Candidate.Tile, Heroes);
 
             else if (CandidateScore >= 0)
-            {
-                Console.WriteLine(CandidateScore);
                 return this;
-            }
 
             else
                 return new Retreating(Monster, Heroes);

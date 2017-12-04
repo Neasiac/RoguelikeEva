@@ -10,7 +10,7 @@ using Vegricht.RoguelikeEva.Components;
 using Vegricht.RoguelikeEva.Scenes.Core;
 using System.Collections;
 
-namespace Vegricht.RoguelikeEva
+namespace Vegricht.RoguelikeEva.Serializable
 {
     class MonsterPrototype
     {
@@ -18,10 +18,10 @@ namespace Vegricht.RoguelikeEva
         public int Speed { get; private set; }
         public int HitPoints { get; private set; }
         public int Strength { get; private set; }
-        public CombatManager.CombatType Type { get; private set; }
-        public CombatManager.CombatType EnemyAwareness { get; set; }
+        public CombatType Type { get; private set; }
+        public CombatType EnemyAwareness { get; set; }
         
-        public MonsterPrototype(string name, int speed, int hp, int atk, CombatManager.CombatType type)
+        public MonsterPrototype(string name, int speed, int hp, int atk, CombatType type)
         {
             Name = name;
             Speed = speed;
@@ -29,11 +29,11 @@ namespace Vegricht.RoguelikeEva
             Strength = atk;
             Type = type;
             
-            EnemyAwareness = CombatManager.CombatType.Lizard |
-                             CombatManager.CombatType.Paper |
-                             CombatManager.CombatType.Rock |
-                             CombatManager.CombatType.Scissors |
-                             CombatManager.CombatType.Spock;
+            EnemyAwareness = CombatType.Lizard |
+                             CombatType.Paper |
+                             CombatType.Rock |
+                             CombatType.Scissors |
+                             CombatType.Spock;
         }
         
         public override string ToString()

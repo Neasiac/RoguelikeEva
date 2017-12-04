@@ -9,6 +9,7 @@ using Vegricht.RoguelikeEva.Pathfinding;
 using Vegricht.RoguelikeEva.Level;
 using Vegricht.RoguelikeEva.AI;
 using Vegricht.RoguelikeEva.Scenes.Core;
+using Vegricht.RoguelikeEva.Serializable;
 
 namespace Vegricht.RoguelikeEva.Components
 {
@@ -20,7 +21,7 @@ namespace Vegricht.RoguelikeEva.Components
         SpriteRenderer Renderer;
         AIState CurrentState;
 
-        public override CombatManager.CombatType EnemyAwareness
+        public override CombatType EnemyAwareness
         {
             get
             {
@@ -73,7 +74,7 @@ namespace Vegricht.RoguelikeEva.Components
         {
             CurrentState = CurrentState.DecideStrategy();
             Path = CurrentState.InitiateTurn();
-
+            
             if (Path == null)
                 Finished = true;
             else

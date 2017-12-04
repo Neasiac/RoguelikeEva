@@ -11,6 +11,7 @@ using Vegricht.RoguelikeEva.Animations;
 using Vegricht.RoguelikeEva.Pathfinding;
 using System.Collections.Generic;
 using Vegricht.RoguelikeEva.Level;
+using Vegricht.RoguelikeEva.Serializable;
 
 namespace Vegricht.RoguelikeEva.Scenes
 {
@@ -25,41 +26,7 @@ namespace Vegricht.RoguelikeEva.Scenes
         Texture2D NextTurn;
         Texture2D Sword;
         SpriteFont Font;
-
-        ushort[,] map = new ushort[30, 20]
-            {
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 1, 1, 1, 1, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 1, 1,     1,      1, 0, 0, 0x0602, 2, 2, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 1, 0x0101,0x0201, 1, 5, 5, 0x0605, 5, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 0, 0x0103,0x0203, 0, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 0, 0x0303,0x0403, 0, 0x0505, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 4, 0x0304,0x0404, 4, 0x0504, 4, 0x0704, 0x0706, 6, 6, 6, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 4, 4, 4, 4, 4, 4, 4, 6, 6, 6, 6, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 4, 4, 0, 4, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-            };
-
+        
         GameObject Camera;
         GameObject GlobalScripts;
         Map Map;
@@ -82,9 +49,9 @@ namespace Vegricht.RoguelikeEva.Scenes
             CreateMechanics();
             CreateUI();
             CreateMap();
-            CreateCharacters();
-            CreateMonsters();
             CreateItems();
+            CreateMonsters();
+            CreateCharacters();
         }
 
         void CreateMechanics()
@@ -108,6 +75,8 @@ namespace Vegricht.RoguelikeEva.Scenes
                 .AddComponent(new TurnManager())
                 .AddComponent(new CombatManager(sword))
                 .Register(this);
+
+            GlobalScripts.GetComponent<Player>().Mode = Player.PlayerMode.Thinking;
         }
 
         void CreateUI()
@@ -135,14 +104,15 @@ namespace Vegricht.RoguelikeEva.Scenes
 
         void CreateMap()
         {
-            GameObject[,] tiles = new GameObject[map.GetLength(0), map.GetLength(1)];
+            MapBlueprint map = MapBlueprint.FromFile(@"..\..\..\..\..\map.bin");
+            GameObject[,] tiles = new GameObject[map.Encoding.GetLength(0), map.Encoding.GetLength(1)];
             Dictionary<byte, Room> rooms = new Dictionary<byte, Room>();
 
-            for (int x = 0; x < map.GetLength(0); x++)
-                for (int y = 0; y < map.GetLength(1); y++)
+            for (int x = 0; x < map.Encoding.GetLength(0); x++)
+                for (int y = 0; y < map.Encoding.GetLength(1); y++)
                 {
-                    byte roomID = (byte)(map[x, y] & 0x00FF);
-                    byte doorID = (byte)((map[x, y] & 0xFF00) >> 4);
+                    byte roomID = map.Encoding[x, y][0];
+                    byte doorID = map.Encoding[x, y][1];
 
                     if (!rooms.ContainsKey(roomID))
                         rooms.Add(roomID, new Room(roomID));
@@ -156,11 +126,12 @@ namespace Vegricht.RoguelikeEva.Scenes
                         .AddComponent(node)
                         .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
                         .AddComponent(new Clickable(() => GlobalScripts.GetComponent<Player>().SelectNode(node)))
+                        .AddComponent(new Hoverable(() => GlobalScripts.GetComponent<Player>().RequestInfoboxOverride("Room ID: " + node.Room.ID, node)))
                         .Register(this);
                 }
             
             Map = new Map(tiles, rooms.Values);
-            Map.SetupRooms();
+            Map.SetupRooms(map.StartRoomId);
             Map.SetNeighbors();
             Map.SetTileGraphics(Floor, FloorDark, Wall);
             GlobalScripts.GetComponent<MapPanner>().Map = Map;
@@ -168,43 +139,74 @@ namespace Vegricht.RoguelikeEva.Scenes
         
         void CreateCharacters()
         {
-            GlobalScripts.GetComponent<Player>().Mode = Player.PlayerMode.Thinking;
-            CreateHero("Lemon", 1, 0, 10, 4, Color.Yellow, 8, 10, 4, CombatManager.CombatType.Lizard);
-            CreateHero("Orange", 0, 1, 2, 1, Color.Orange, 8, 10, 4, CombatManager.CombatType.Spock);
+            Map.StartRoom.UpdateGraphics(Room.Visibility.Visible);
+            string[] names = new string[10] { "Kitomo", "Bachizo", "Montaro", "Iemio", "Ryohiro", "Fumio", "Satoshi", "Koichi", "Kohaku", "Teruo" };
+            HashSet<int> takenCoords = new HashSet<int>();
+            HashSet<string> takenNames = new HashSet<string>();
+            Array types = Enum.GetValues(typeof(CombatType));
+            Random rnd = new Random();
+            
+            for (int i = 0; i < 5; i++)
+            {
+                int spriteX = 0, spriteY = 0, hash = 0;
+                MapNode node = null;
+                string name = null;
+
+                // randomize visuals
+                do
+                {
+                    spriteX = rnd.Next(4);
+                    spriteY = rnd.Next(2);
+                    hash = (851 + spriteX) * 37 + spriteY;
+                }
+                while (takenCoords.Contains(hash));
+
+                // randomize position
+                do
+                    node = Map.StartRoom.Nodes[rnd.Next(Map.StartRoom.Nodes.Count)];
+                while (node.OccupiedBy != null);
+
+                // randomize name
+                do
+                    name = names[rnd.Next(names.Length)];
+                while (takenNames.Contains(name));
+                
+                // randomize character
+                int speed = rnd.Next(4, 8);
+                int hp = rnd.Next(8, 12);
+                int atk = rnd.Next(2, 4);
+                
+                // finalize and create hero
+                CombatType type = (CombatType)types.GetValue(i);
+                takenCoords.Add(hash);
+                takenNames.Add(name);
+                
+                GameObject hero = CreateHero(name, spriteX, spriteY, node.X, node.Y, Color.Yellow, speed, hp, atk, type);
+                GlobalScripts.GetComponent<TurnManager>().Heroes.Add(hero.GetComponent<Hero>());
+            }
         }
 
         void CreateMonsters()
         {
-            MonsterPrototype prototype = new MonsterPrototype("Snake Monster", 8, 15, 4, CombatManager.CombatType.Paper);
-            CreateMonster(prototype, 1, 0, 2, 3);
-            //CreateMonster(prototype, 1, 0, 9, 9);
+            MonsterPrototype prototype = new MonsterPrototype("Snake Monster", 8, 15, 4, CombatType.Paper);
+            CreateMonster(prototype, 1, 0, 16, 5);
+            //CreateMonster(prototype, 1, 0, 15, 1);
         }
 
         void CreateItems()
         {
-            Player player = GlobalScripts.GetComponent<Player>();
-            Item itemComponent = new Item(chara =>
-                {
-                    Character.Status spd = chara.Speed;
-                    spd.Remaining = spd.Max;
-                    chara.Speed = spd;
-                });
-
-            GameObject item1 = new GameObjectBuilder()
-                .AddComponent(new Transform(new Vector2(Map.Size * 4, Map.Size * 3)))
-                .AddComponent(new SpriteRenderer(Items, new Rectangle(Map.Size * 9, Map.Size * 4, Map.Size, Map.Size)))
-                .AddComponent(itemComponent)
-                .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
-                .AddComponent(new Hoverable(() => player.RequestInfoboxOverride(
-                        "<Poition of Speed>" + Environment.NewLine +
-                        "Fills your speed to max.",
-                    itemComponent), () => player.InvalidateInfoboxOverride(itemComponent)))
-                .Register(this);
-
-            Map[4, 3].OccupiedBy = item1;
+            CreateItem(chara =>
+            {
+                Character.Status spd = chara.Speed;
+                spd.Remaining = spd.Max;
+                chara.Speed = spd;
+            },
+                "<Poition of Speed>" + Environment.NewLine +
+                "Fills your speed to max.",
+                9, 4, 16, 4);
         }
 
-        GameObject CreateHero(string name, int spriteX, int spriteY, int posX, int posY, Color col, int speed, int hp, int atk, CombatManager.CombatType type)
+        GameObject CreateHero(string name, int spriteX, int spriteY, int posX, int posY, Color col, int speed, int hp, int atk, CombatType type)
         {
             Hero heroComponent = new Hero(name, GlobalScripts, Map[posX, posY], col, speed, hp, atk, type);
             Player player = GlobalScripts.GetComponent<Player>();
@@ -226,9 +228,6 @@ namespace Vegricht.RoguelikeEva.Scenes
                 .Register(this);
             
             Map[posX, posY].OccupiedBy = hero;
-            Map[posX, posY].Room.UpdateGraphics(Room.Visibility.Visible);
-
-            GlobalScripts.GetComponent<TurnManager>().Heroes.Add(heroComponent);
             return hero;
         }
 
@@ -249,7 +248,7 @@ namespace Vegricht.RoguelikeEva.Scenes
                         "HP: " + monsterComponent.HitPoints.Remaining + " / " + monsterComponent.HitPoints.Max + Environment.NewLine +
                         "Speed: " + monsterComponent.Speed.Max + Environment.NewLine +
                         "Strength: " + monsterComponent.Strength + Environment.NewLine +
-                        "Possible Types: " + String.Join(", ", monsterComponent.Species.EnemyAwareness),
+                        "Possible Types: " + string.Join(", ", monsterComponent.Species.EnemyAwareness),
                             monsterComponent), () => player.InvalidateInfoboxOverride(monsterComponent)))
                 .Register(this);
 
@@ -260,6 +259,28 @@ namespace Vegricht.RoguelikeEva.Scenes
 
             GlobalScripts.GetComponent<TurnManager>().Monsters.Add(monsterComponent);
             return monster;
+        }
+
+        GameObject CreateItem(Action<Character> effect, string description, int spriteX, int spriteY, int posX, int posY)
+        {
+            Player player = GlobalScripts.GetComponent<Player>();
+            Item itemComponent = new Item(effect);
+
+            GameObject item = new GameObjectBuilder()
+                .AddComponent(new Transform(new Vector2(Map.Size * posX, Map.Size * posY)))
+                .AddComponent(new SpriteRenderer(Items, new Rectangle(Map.Size * spriteX, Map.Size * spriteY, Map.Size, Map.Size)))
+                .AddComponent(itemComponent)
+                .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
+                .AddComponent(new Hoverable(() => player.RequestInfoboxOverride(description, itemComponent),
+                                            () => player.InvalidateInfoboxOverride(itemComponent)))
+                .Register(this);
+
+            Map[posX, posY].OccupiedBy = item;
+
+            if (Map[posX, posY].Room.View != Room.Visibility.Visible)
+                item.GetComponent<SpriteRenderer>().Active = false;
+
+            return item;
         }
         
         Animator CreateSwordAnimator(int duration = 30, int size = 48)
