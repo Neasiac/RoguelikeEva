@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
 namespace Vegricht.LevelGenerator.Evolution

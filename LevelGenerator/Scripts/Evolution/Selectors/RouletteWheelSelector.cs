@@ -4,15 +4,16 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
-namespace Vegricht.LevelGenerator.Evolution
+namespace Vegricht.LevelGenerator.Evolution.Selectors
 {
-    class RouletteWheelSelector : Selector
+    class RouletteWheelSelector : ISelector
     {
         Random Rnd = new Random();
         
-        public override Individual[] Select(int amount, Individual[] population)
+        public Individual[] Select(int amount, Individual[] population)
         {
             //int amount = population.Length; // FIXME: dynamic amount for more selectors?
             double fitnessSum = 0;
@@ -20,11 +21,11 @@ namespace Vegricht.LevelGenerator.Evolution
             //Individual[] selected = new Individual[population.Length];
             List<Individual> selected = new List<Individual>(); // FIXME: use just array
 
-            for (int i = 0; i < population.Length; i++)
+            /*for (int i = 0; i < population.Length; i++)
                 fitnessSum += population[i].Fitness;
 
             for (int i = 0; i < population.Length; i++)
-                fitnesses[i] = population[i].Fitness / fitnessSum;
+                fitnesses[i] = population[i].Fitness / fitnessSum;*/
             
             for (int i = 0; i < amount; i++)
             {

@@ -31,6 +31,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,31 +62,57 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Scripts\Evolution\Hypervolume\BiobjectiveHvIndicator.cs" />
+    <Compile Include="Externals\Tree\Tree.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Externals\net-object-deep-copy\ObjectExtentions.cs" />
-    <Compile Include="Scripts\Evolution\BooleanIndividual.cs" />
-    <Compile Include="Scripts\Evolution\BitFlipMutation.cs" />
-    <Compile Include="Scripts\Evolution\SimpleFitness.cs" />
-    <Compile Include="Scripts\Evolution\BinPackingFitness.cs" />
-    <Compile Include="Scripts\Evolution\Heavy2LightMutation.cs" />
-    <Compile Include="Scripts\Evolution\SwapMutation.cs" />
-    <Compile Include="Scripts\Evolution\OnePointCrossover.cs" />
-    <Compile Include="Scripts\Evolution\IntegerMutation.cs" />
-    <Compile Include="Scripts\Evolution\IntegerIndividual.cs" />
-    <Compile Include="Scripts\Evolution\Operator.cs" />
-    <Compile Include="Scripts\Evolution\RouletteWheelSelector.cs" />
-    <Compile Include="Scripts\Evolution\Selector.cs" />
-    <Compile Include="Scripts\Evolution\Fitness.cs" />
+    <Compile Include="Scripts\Connection.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\BranchEntryPointsFitness.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\BranchRatioFitness.cs" />
+    <Compile Include="Scripts\Evolution\Individuals\AdjacencyGraphIndividual.cs" />
+    <Compile Include="Scripts\Evolution\Operators\ShiftStartingRoomMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\ReverseBranchMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\ReplaceBranchMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\CompressBranchMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\ExtendBranchMutation.cs" />
+    <Compile Include="Scripts\GraphNode.cs" />
+    <Compile Include="Scripts\Evolution\Hypervolume\HypervolumeIndicator.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\AdjacencyFitness.cs" />
+    <Compile Include="Scripts\Evolution\Operators\ExtendEdgeMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\FillHoleMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\RemoveRoomMutation.cs" />
+    <Compile Include="Scripts\SweeperBinaryTree.cs" />
+    <Compile Include="Scripts\Evolution\Hypervolume\HvSweep3D.cs" />
+    <Compile Include="Scripts\Coords.cs" />
+    <Compile Include="Scripts\Evolution\Operators\JoinRoomsMutation.cs" />
+    <Compile Include="Scripts\Evolution\Operators\FloorTypeMutation.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\RoomFitness.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\SpaceFitness.cs" />
+    <Compile Include="Scripts\Evolution\Individuals\MapBlueprintIndividual.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\LayoutFitness.cs" />
+    <Compile Include="Scripts\Evolution\Selectors\Nsga2Selector.cs" />
+    <Compile Include="Scripts\Evolution\tmp\BooleanIndividual.cs" />
+    <Compile Include="Scripts\Evolution\tmp\BitFlipMutation.cs" />
+    <Compile Include="Scripts\Evolution\tmp\SimpleFitness.cs" />
+    <Compile Include="Scripts\Evolution\tmp\BinPackingFitness.cs" />
+    <Compile Include="Scripts\Evolution\tmp\Heavy2LightMutation.cs" />
+    <Compile Include="Scripts\Evolution\tmp\SwapMutation.cs" />
+    <Compile Include="Scripts\Evolution\tmp\OnePointCrossover.cs" />
+    <Compile Include="Scripts\Evolution\tmp\IntegerMutation.cs" />
+    <Compile Include="Scripts\Evolution\tmp\IntegerIndividual.cs" />
+    <Compile Include="Scripts\Evolution\Operators\IOperator.cs" />
+    <Compile Include="Scripts\Evolution\Selectors\RouletteWheelSelector.cs" />
+    <Compile Include="Scripts\Evolution\Selectors\ISelector.cs" />
+    <Compile Include="Scripts\Evolution\Fitnesses\Fitness.cs" />
     <Compile Include="Scripts\Evolution\Generation.cs" />
-    <Compile Include="Scripts\Evolution\Individual.cs" />
+    <Compile Include="Scripts\Evolution\Individuals\Individual.cs" />
     <Compile Include="Scripts\Evolution\EvolutionaryAlgorithm.cs" />
     <Compile Include="Scripts\Rectangle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\RoguelikeEva\RoguelikeEva.csproj">
       <Project>{1fc5ded9-6686-4f3c-b08c-03db52e82265}</Project>

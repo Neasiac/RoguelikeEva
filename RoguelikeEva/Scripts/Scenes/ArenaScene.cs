@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.Xna.Framework;
@@ -49,8 +48,8 @@ namespace Vegricht.RoguelikeEva.Scenes
             CreateMechanics();
             CreateUI();
             CreateMap();
-            CreateItems();
-            CreateMonsters();
+            //CreateItems();
+            //CreateMonsters();
             CreateCharacters();
         }
 
@@ -126,7 +125,7 @@ namespace Vegricht.RoguelikeEva.Scenes
                         .AddComponent(node)
                         .AddComponent(new Dimentions(0, 0, Map.Size, Map.Size))
                         .AddComponent(new Clickable(() => GlobalScripts.GetComponent<Player>().SelectNode(node)))
-                        .AddComponent(new Hoverable(() => GlobalScripts.GetComponent<Player>().RequestInfoboxOverride("Room ID: " + node.Room.ID, node)))
+                        //.AddComponent(new Hoverable(() => GlobalScripts.GetComponent<Player>().RequestInfoboxOverride("Room ID: " + node.Room.ID, node)))
                         .Register(this);
                 }
             

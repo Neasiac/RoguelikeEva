@@ -11,7 +11,7 @@ using FibonacciHeap;
 
 namespace Vegricht.RoguelikeEva.Pathfinding
 {
-    class HashedFibonacciHeap<T, TKey> where TKey : IComparable<TKey>
+    public class HashedFibonacciHeap<T, TKey> where TKey : IComparable<TKey>
     {
         FibonacciHeap<T, TKey> Heap;
         Dictionary<T, FibonacciHeapNode<T, TKey>> ObjectToHeapNodeMapping;

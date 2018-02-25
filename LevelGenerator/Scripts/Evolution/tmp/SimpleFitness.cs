@@ -4,13 +4,15 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Fitnesses;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
 namespace Vegricht.LevelGenerator.Evolution
 {
-    class SimpleFitness : Fitness
+    class SimpleFitness : IFitness
     {
-        public override double Evaluate(Individual ind)
+        public double Evaluate(Individual ind)
         {
             BooleanIndividual bi = (BooleanIndividual)ind;
             bool[] genes = bi.Genes;
@@ -37,7 +39,7 @@ namespace Vegricht.LevelGenerator.Evolution
 
             // ===  END IF  === //
 
-            ind.Objective = fitness; //this sets the objective value, can be different from the fitness function
+            //ind.Objective = fitness; //this sets the objective value, can be different from the fitness function
 
             return fitness;
         }

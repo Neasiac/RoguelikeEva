@@ -4,11 +4,12 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
-namespace Vegricht.LevelGenerator.Evolution
+namespace Vegricht.LevelGenerator.Evolution.Operators
 {
-    class Heavy2LightMutation : Operator
+    class Heavy2LightMutation : IOperator
     {
         Random Rnd = new Random();
         double MutationProbability;
@@ -22,7 +23,7 @@ namespace Vegricht.LevelGenerator.Evolution
             Bins = K;
         }
 
-        public override Individual[] Operate(Individual[] parents)
+        public Individual[] Operate(Individual[] parents)
         {
             Individual[] offspring = new Individual[parents.Length];
 

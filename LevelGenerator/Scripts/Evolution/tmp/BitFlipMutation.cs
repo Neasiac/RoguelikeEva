@@ -4,30 +4,31 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
-namespace Vegricht.LevelGenerator.Evolution
+namespace Vegricht.LevelGenerator.Evolution.Operators
 {
-    class IntegerMutation : Operator
+    class BitFlipMutation : IOperator
     {
         Random Rnd = new Random();
         double MutationProbability;
         double GeneChangeProbability;
 
-        public IntegerMutation(double mutationProbability, double geneChangeProbability)
+        public BitFlipMutation(double mutationProbability, double geneChangeProbability)
         {
             MutationProbability = mutationProbability;
             GeneChangeProbability = geneChangeProbability;
         }
 
-        public override Individual[] Operate(Individual[] parents)
+        public Individual[] Operate(Individual[] parents)
         {
             Individual[] offspring = new Individual[parents.Length];
-
+            
             for (int i = 0; i < parents.Length; i++)
             {
-                IntegerIndividual p1 = (IntegerIndividual)parents[i];
-                IntegerIndividual o1 = (IntegerIndividual)p1.Clone();
+                BooleanIndividual p1 = (BooleanIndividual)parents[i];
+                BooleanIndividual o1 = (BooleanIndividual)p1.Clone();
 
                 if (Rnd.NextDouble() < MutationProbability)
                 {
@@ -35,7 +36,8 @@ namespace Vegricht.LevelGenerator.Evolution
                     {
                         if (Rnd.NextDouble() < GeneChangeProbability)
                         {
-                            o1.Genes[j] = Rnd.Next(o1.Max - o1.Min) + o1.Min;
+                            bool b = o1.Genes[j];
+                            o1.Genes[j] = !b;
                         }
                     }
                 }

@@ -4,11 +4,12 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
-namespace Vegricht.LevelGenerator.Evolution
+namespace Vegricht.LevelGenerator.Evolution.Operators
 {
-    class OnePointCrossover : Operator
+    class OnePointCrossover : IOperator
     {
         Random Rnd = new Random();
         double XOverProbability;
@@ -18,7 +19,7 @@ namespace Vegricht.LevelGenerator.Evolution
             XOverProbability = xOverProbability;
         }
 
-        public override Individual[] Operate(Individual[] parents)
+        public Individual[] Operate(Individual[] parents)
         {
             Individual[] offspring = new Individual[parents.Length];
 

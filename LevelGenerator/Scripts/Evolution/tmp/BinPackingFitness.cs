@@ -4,11 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Fitnesses;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
 namespace Vegricht.LevelGenerator.Evolution
 {
-    class BinPackingFitness : Fitness
+    class BinPackingFitness : IFitness
     {
         List<double> weights;
         int K;
@@ -19,7 +21,7 @@ namespace Vegricht.LevelGenerator.Evolution
             this.K = K;
         }
 
-        public override double Evaluate(Individual ind)
+        public double Evaluate(Individual ind)
         {
             int[] binWeights = getBinWeights(ind);
 
@@ -38,7 +40,7 @@ namespace Vegricht.LevelGenerator.Evolution
                 }
             }
 
-            ind.Objective = max - min;    // tohle doporucuji zachovat
+            //ind.Objective = max - min;    // tohle doporucuji zachovat
 
             //return 1 / (ind.Objective + 1);
 

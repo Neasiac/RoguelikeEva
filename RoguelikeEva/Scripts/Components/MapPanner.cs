@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Microsoft.Xna.Framework;
 using Vegricht.RoguelikeEva.Components.Core;
 using Vegricht.RoguelikeEva.Level;

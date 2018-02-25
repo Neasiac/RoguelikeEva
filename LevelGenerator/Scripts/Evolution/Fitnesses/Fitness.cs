@@ -4,12 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
-namespace Vegricht.LevelGenerator.Evolution
+namespace Vegricht.LevelGenerator.Evolution.Fitnesses
 {
-    abstract class Selector
+    interface IFitness
     {
-        public abstract Individual[] Select(int amount, Individual[] population);
+        double Evaluate(Individual ind);
     }
 }

@@ -4,12 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Vegricht.LevelGenerator.Evolution.Individuals;
 using Vegricht.RoguelikeEva.Serializable;
 
-namespace Vegricht.LevelGenerator.Evolution
+namespace Vegricht.LevelGenerator.Evolution.Selectors
 {
-    abstract class Operator
+    interface ISelector
     {
-        public abstract Individual[] Operate(Individual[] parents);
+        Individual[] Select(int amount, Individual[] population);
     }
 }
